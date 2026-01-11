@@ -131,6 +131,26 @@ select {
     border-color: var(--theme-border) !important;
 }
 
+/* Footer styles */
+footer {
+    margin-top: auto;
+}
+
+footer p {
+    margin: 0;
+    padding: 0;
+}
+
+footer a {
+    color: var(--theme-primary);
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+footer a:hover {
+    opacity: 0.8;
+}
+
 /* Smooth scrolling */
 html {
     scroll-behavior: smooth;

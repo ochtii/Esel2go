@@ -6,6 +6,7 @@
 import * as i18n from './i18n.js';
 import * as cart from './cart.js';
 import * as ui from './ui.js';
+import * as footer from './footer.js';
 
 /**
  * Initialize the entire application
@@ -26,6 +27,10 @@ async function initializeApp() {
         // 3. Initialize UI
         console.log('Initializing UI...');
         await ui.initializeUI();
+        
+        // 4. Initialize Footer
+        console.log('Initializing Footer...');
+        await footer.initializeFooter();
         
         // 4. Set language selector
         const availableLanguages = i18n.getAvailableLanguages();
