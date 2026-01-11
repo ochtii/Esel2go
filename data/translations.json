@@ -1,0 +1,24 @@
+{
+  "de": {
+    "appTitle": "esel2go",
+    "cartTitle": "Dein Sackl",
+    "addToCart": "In den Warenkorb",
+    "total": "Gesamt",
+    "checkout": "Zur Kassa, Oida",
+    "freeShipping": "Gratis Lieferung! Leiwand!",
+    "shippingCost": "Versandkosten",
+    "bonusItem": "Gratis Seminar: Kamel abwixxen Einsteigerkurs",
+    "filterAll": "Alles anzeigen"
+  },
+  "en": {
+    "appTitle": "esel2go",
+    "cartTitle": "Your Bag",
+    "addToCart": "Add to Cart",
+    "total": "Total",
+    "checkout": "Checkout now",
+    "freeShipping": "Free Shipping! Awesome!",
+    "shippingCost": "Shipping",
+    "bonusItem": "Free Workshop: Camel Wanking 101",
+    "filterAll": "Show All"
+  }
+}

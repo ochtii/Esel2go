@@ -1,0 +1,170 @@
+/**
+ * Custom CSS Overrides & Tailwind Extensions
+ * Supplementary styles for esel2go application
+ */
+
+/* CSS Variables for Theming */
+:root {
+    --theme-primary: #0ea5e9;
+    --theme-primary-dark: #0284c7;
+    --theme-accent: #f97316;
+    --theme-text: #1f2937;
+    --theme-text-light: #6b7280;
+    --theme-bg: #ffffff;
+    --theme-bg-secondary: #f9fafb;
+    --theme-border: #e5e7eb;
+}
+
+/* Theme-specific styles */
+body.theme-light {
+    background-color: var(--theme-bg);
+    color: var(--theme-text);
+}
+
+body.theme-dark {
+    background-color: var(--theme-bg);
+    color: var(--theme-text);
+}
+
+body.theme-esel-oida {
+    background-color: var(--theme-bg);
+    color: var(--theme-text);
+    font-family: 'Comic Sans MS', 'Trebuchet MS', cursive;
+}
+
+/* Theme-aware components */
+body.theme-esel-oida h1,
+body.theme-esel-oida h2,
+body.theme-esel-oida h3 {
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar for cart sidebar */
+#cartSidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+#cartSidebar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+#cartSidebar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+#cartSidebar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Line clamp for descriptions */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Smooth transitions */
+* {
+    transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Cart sidebar smooth transition */
+#cartSidebar {
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#cartOverlay {
+    transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Button hover effects */
+button {
+    position: relative;
+    overflow: hidden;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+/* Product card hover effect */
+.bg-white:has(.add-to-cart-btn) {
+    position: relative;
+}
+
+/* Focus states for accessibility */
+button:focus-visible,
+select:focus-visible {
+    outline: 2px solid #0284c7;
+    outline-offset: 2px;
+}
+
+/* Toast notification animation */
+@keyframes slideUp {
+    from {
+        transform: translateY(80px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+#toast:not(.translate-y-20) {
+    animation: slideUp 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Image loading optimization */
+img {
+    background-color: #f3f4f6;
+}
+
+/* Grid responsive adjustments */
+@media (max-width: 640px) {
+    #categoryFilter {
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 8px;
+    }
+    
+    #categoryFilter button {
+        flex-shrink: 0;
+        scroll-snap-align: start;
+    }
+}
+
+/* Cart sidebar responsive */
+@media (max-width: 640px) {
+    #cartSidebar {
+        max-width: 100%;
+    }
+}
+
+/* Accessible focus for keyboard navigation */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    #cartToggle,
+    #cartSidebar,
+    #cartOverlay {
+        display: none !important;
+    }
+}

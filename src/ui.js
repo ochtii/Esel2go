@@ -1,0 +1,350 @@
+/**
+ * UI Module - DOM Manipulation & Event Handling
+ * Manages rendering and user interaction
+ */
+
+import * as api from './api.js';
+import * as cart from './cart.js';
+import * as i18n from './i18n.js';
+import * as theme from './theme.js';
+
+// DOM Elements
+const categoryFilter = document.getElementById('categoryFilter');
+const productsGrid = document.getElementById('productsGrid');
+const cartToggle = document.getElementById('cartToggle');
+const cartClose = document.getElementById('cartClose');
+const cartSidebar = document.getElementById('cartSidebar');
+const cartOverlay = document.getElementById('cartOverlay');
+const cartItemsList = document.getElementById('cartItemsList');
+const emptyCartMessage = document.getElementById('emptyCartMessage');
+const cartSummary = document.getElementById('cartSummary');
+const cartBadge = document.getElementById('cartBadge');
+const languageSelect = document.getElementById('languageSelect');
+const themeSelect = document.getElementById('themeSelect');
+const toast = document.getElementById('toast');
+const toastMessage = document.getElementById('toastMessage');
+
+let currentFilter = 'all';
+
+/**
+ * Render category filter buttons
+ */
+export async function renderCategories() {
+    const categories = await api.fetchCategories();
+    
+    // Add "All" button
+    categoryFilter.innerHTML = `
+        <button class="category-btn px-6 py-2 rounded-full font-semibold transition
+            ${currentFilter === 'all' 
+                ? 'bg-primary-600 text-white' 
+                : 'bg-white text-gray-800 border border-gray-300 hover:border-primary-600'
+            }" data-category="all">
+            ${i18n.t('filterAll', 'Alles anzeigen')}
+        </button>
+    `;
+    
+    // Add category buttons
+    categories.forEach(category => {
+        const button = document.createElement('button');
+        button.className = `category-btn px-6 py-2 rounded-full font-semibold transition ${
+            currentFilter === category.id 
+                ? 'bg-primary-600 text-white' 
+                : 'bg-white text-gray-800 border border-gray-300 hover:border-primary-600'
+        }`;
+        button.textContent = category.name;
+        button.dataset.category = category.id;
+        button.addEventListener('click', () => filterByCategory(category.id));
+        categoryFilter.appendChild(button);
+    });
+    
+    // Add event listeners to all category buttons
+    document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.category-btn').forEach(b => {
+                b.classList.remove('bg-primary-600', 'text-white');
+                b.classList.add('bg-white', 'text-gray-800', 'border', 'border-gray-300');
+            });
+            e.target.classList.remove('bg-white', 'text-gray-800', 'border', 'border-gray-300');
+            e.target.classList.add('bg-primary-600', 'text-white');
+        });
+    });
+}
+
+/**
+ * Filter products by category
+ */
+async function filterByCategory(categoryId) {
+    currentFilter = categoryId;
+    await renderProducts();
+}
+
+/**
+ * Render product grid
+ */
+export async function renderProducts() {
+    const products = await api.getProductsByCategory(currentFilter);
+    
+    productsGrid.innerHTML = '';
+    
+    if (products.length === 0) {
+        productsGrid.innerHTML = `
+            <div class="col-span-full text-center py-12">
+                <p class="text-gray-500 text-lg">Keine Produkte gefunden</p>
+            </div>
+        `;
+        return;
+    }
+    
+    products.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.className = 'bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition';
+        
+        productCard.innerHTML = `
+            <div class="aspect-square overflow-hidden bg-gray-100">
+                <img src="${product.image}" alt="${product.name}" 
+                    class="w-full h-full object-cover hover:scale-105 transition">
+            </div>
+            <div class="p-4">
+                <h3 class="font-semibold text-gray-900 text-lg mb-1">${product.name}</h3>
+                <p class="text-gray-600 text-sm mb-3 line-clamp-2">${product.description}</p>
+                
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-2xl font-bold text-accent-600">€ ${product.price.toFixed(2)}</span>
+                    <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                        ${product.origin}
+                    </span>
+                </div>
+                
+                <button class="add-to-cart-btn w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 rounded-lg transition"
+                    data-product-id="${product.id}">
+                    ${i18n.t('addToCart', 'In den Warenkorb')}
+                </button>
+            </div>
+        `;
+        
+        // Add to cart button event listener
+        productCard.querySelector('.add-to-cart-btn').addEventListener('click', (e) => {
+            cart.addToCart(product, 1);
+            updateCartUI();
+            showToast(`${product.name} hinzugefügt!`);
+        });
+        
+        productsGrid.appendChild(productCard);
+    });
+}
+
+/**
+ * Render cart items list
+ */
+export function renderCartItems() {
+    const cartItemsData = cart.getCartItems();
+    const cartItemsContainer = cartItemsList;
+    
+    cartItemsContainer.innerHTML = '';
+    
+    if (cartItemsData.length === 0) {
+        emptyCartMessage.classList.remove('hidden');
+        cartSummary.classList.add('hidden');
+        return;
+    }
+    
+    emptyCartMessage.classList.add('hidden');
+    cartSummary.classList.remove('hidden');
+    
+    cartItemsData.forEach(item => {
+        const cartItem = document.createElement('div');
+        cartItem.className = `flex justify-between items-center pb-4 border-b ${
+            item.isBonus ? 'bg-green-50 p-3 rounded border-green-200' : ''
+        }`;
+        
+        const itemName = item.isBonus 
+            ? `<span class="text-green-700 font-semibold">✓ ${item.name}</span>`
+            : `<span class="font-medium">${item.name}</span>`;
+        
+        cartItem.innerHTML = `
+            <div class="flex-1">
+                ${itemName}
+                <div class="text-sm text-gray-500">
+                    €${item.price.toFixed(2)} x ${item.quantity}
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="font-semibold">€${(item.price * item.quantity).toFixed(2)}</span>
+                ${!item.isBonus ? `
+                    <button class="remove-item text-red-500 hover:text-red-700 transition p-1" 
+                        data-product-id="${item.id}">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                ` : ''}
+            </div>
+        `;
+        
+        // Remove button event listener
+        if (!item.isBonus) {
+            cartItem.querySelector('.remove-item').addEventListener('click', () => {
+                cart.removeFromCart(item.id);
+                updateCartUI();
+                showToast(`${item.name} entfernt`);
+            });
+        }
+        
+        cartItemsContainer.appendChild(cartItem);
+    });
+}
+
+/**
+ * Update cart summary display
+ */
+export function updateCartSummary() {
+    // Update bonus item
+    const hadBonus = cart.shouldAddBonusItem();
+    cart.updateBonusItem();
+    
+    const summary = cart.getCartSummary();
+    
+    // Format amounts
+    const subtotalEl = document.getElementById('subtotal');
+    const shippingCostEl = document.getElementById('shippingCost');
+    const totalEl = document.getElementById('total');
+    const bonusSection = document.getElementById('bonusSection');
+    const shippingLabel = document.getElementById('shippingLabel');
+    
+    subtotalEl.textContent = `€ ${summary.subtotal.toFixed(2)}`;
+    totalEl.textContent = `€ ${summary.total.toFixed(2)}`;
+    
+    // Handle free shipping
+    if (summary.hasFreeShipping) {
+        shippingCostEl.textContent = i18n.t('freeShipping', 'Gratis Lieferung! Leiwand!');
+        shippingCostEl.classList.add('text-green-600', 'font-semibold');
+        shippingLabel.textContent = '';
+    } else {
+        shippingCostEl.textContent = `€ ${summary.shippingCost.toFixed(2)}`;
+        shippingCostEl.classList.remove('text-green-600', 'font-semibold');
+        shippingLabel.textContent = i18n.t('shippingCost', 'Versandkosten:');
+    }
+    
+    // Handle bonus item section
+    if (summary.hasBonusItem) {
+        bonusSection.classList.remove('hidden');
+    } else {
+        bonusSection.classList.add('hidden');
+    }
+}
+
+/**
+ * Update entire cart UI
+ */
+export function updateCartUI() {
+    renderCartItems();
+    updateCartSummary();
+    updateCartBadge();
+    updateTranslations();
+}
+
+/**
+ * Update cart badge count
+ */
+function updateCartBadge() {
+    const count = cart.getCartItemCount();
+    if (count > 0) {
+        cartBadge.textContent = count;
+        cartBadge.classList.remove('hidden');
+    } else {
+        cartBadge.classList.add('hidden');
+    }
+}
+
+/**
+ * Toggle cart sidebar visibility
+ */
+export function toggleCart() {
+    cartSidebar.classList.toggle('translate-x-full');
+    cartOverlay.classList.toggle('hidden');
+    
+    if (!cartSidebar.classList.contains('translate-x-full')) {
+        updateCartUI();
+    }
+}
+
+/**
+ * Close cart sidebar
+ */
+function closeCart() {
+    cartSidebar.classList.add('translate-x-full');
+    cartOverlay.classList.add('hidden');
+}
+
+/**
+ * Show toast notification
+ */
+function showToast(message) {
+    toastMessage.textContent = message;
+    toast.classList.remove('translate-y-20', 'opacity-0');
+    
+    setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+    }, 3000);
+}
+
+/**
+ * Update UI text translations
+ */
+function updateTranslations() {
+    document.getElementById('cartTitle').textContent = i18n.t('cartTitle', 'Dein Sackl');
+    document.getElementById('totalLabel').textContent = i18n.t('total', 'Gesamt:');
+    document.getElementById('checkoutBtn').textContent = i18n.t('checkout', 'Zur Kassa, Oida');
+}
+
+/**
+ * Set up event listeners
+ */
+export function setupEventListeners() {
+    cartToggle.addEventListener('click', toggleCart);
+    cartClose.addEventListener('click', closeCart);
+    cartOverlay.addEventListener('click', closeCart);
+    
+    languageSelect.addEventListener('change', (e) => {
+        i18n.setLanguage(e.target.value);
+        updateLanguageUI();
+    });
+    
+    themeSelect.addEventListener('change', (e) => {
+        theme.setTheme(e.target.value);
+        showToast(`Theme: ${theme.getThemeNames()[e.target.value]}`);
+    });
+    
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+        alert('Checkout würde hier passieren! 🎉');
+        console.log('Cart Summary:', cart.getCartSummary());
+    });
+}
+
+/**
+ * Update language select dropdown and translations
+ */
+function updateLanguageUI() {
+    languageSelect.value = i18n.getCurrentLanguage();
+    updateTranslations();
+    renderCategories();
+}
+
+/**
+ * Update theme select dropdown
+ */
+function updateThemeUI() {
+    themeSelect.value = theme.getCurrentTheme();
+}
+
+/**
+ * Initialize UI
+ */
+export async function initializeUI() {
+    theme.initializeTheme();
+    updateThemeUI();
+    await renderCategories();
+    await renderProducts();
+    setupEventListeners();
+    updateCartUI();
+}

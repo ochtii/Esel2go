@@ -1,0 +1,62 @@
+[
+  {
+    "id": "p1",
+    "categoryId": "fettn",
+    "name": "16er Blech (Palette)",
+    "image": "https://placehold.co/400?text=16er+Blech",
+    "description": "Die klassische Hülse aus Ottakring. Warm und kalt genießbar.",
+    "price": 24.90,
+    "age": 0,
+    "origin": "Wien, Oida"
+  },
+  {
+    "id": "p2",
+    "categoryId": "begattungsgut",
+    "name": "Premium Zucht-Esel 'Fritz'",
+    "image": "https://placehold.co/400?text=Esel+Fritz",
+    "description": "Ein Prachtexemplar. Kennt keine Müdigkeit. Nur für Profis.",
+    "price": 1200.00,
+    "age": 5,
+    "origin": "Burgenland"
+  },
+  {
+    "id": "p3",
+    "categoryId": "zubehoer",
+    "name": "Strohhalm Deluxe (vergoldet)",
+    "image": "https://placehold.co/400?text=Goldener+Strohhalm",
+    "description": "Damit das Saufen mehr Stil hat. Wiederverwendbar.",
+    "price": 420.00,
+    "age": 1,
+    "origin": "Dubai"
+  },
+  {
+    "id": "p4",
+    "categoryId": "fettn",
+    "name": "Heurigen Doppler",
+    "image": "https://placehold.co/400?text=Doppler",
+    "description": "Schmeckt wie Fuß, knallt wie ein Hammer. Gemischter Satz.",
+    "price": 4.50,
+    "age": 2,
+    "origin": "Niederösterreich"
+  },
+  {
+    "id": "p5",
+    "categoryId": "begattungsgut",
+    "name": "Pheromon-Spray 'Wuschig'",
+    "image": "https://placehold.co/400?text=Spray",
+    "description": "Wenn es mal schnell gehen muss. Wirkung garantiert.",
+    "price": 49.90,
+    "age": 1,
+    "origin": "Labor 12"
+  },
+  {
+    "id": "p6",
+    "categoryId": "zubehoer",
+    "name": "Sacklpicker Zange",
+    "image": "https://placehold.co/400?text=Zange",
+    "description": "Universalwerkzeug für jede Lebenslage.",
+    "price": 15.00,
+    "age": 0,
+    "origin": "Werkstatt"
+  }
+]

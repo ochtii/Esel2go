@@ -1,0 +1,17 @@
+[
+  {
+    "id": "begattungsgut",
+    "name": "Begattungsgut",
+    "description": "Alles für die schönste Nebensache der Welt"
+  },
+  {
+    "id": "fettn",
+    "name": "Fettn",
+    "description": "Flüssiges Gold für den Rausch"
+  },
+  {
+    "id": "zubehoer",
+    "name": "Zubehör",
+    "description": "Was man halt sonst so braucht"
+  }
+]
