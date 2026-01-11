@@ -29,7 +29,7 @@ body.theme-dark {
 body.theme-esel-oida {
     background-color: var(--theme-bg);
     color: var(--theme-text);
-    font-family: 'Comic Sans MS', 'Trebuchet MS', cursive;
+    font-family: Georgia, serif;
 }
 
 /* Theme-aware components */
@@ -38,6 +38,97 @@ body.theme-esel-oida h2,
 body.theme-esel-oida h3 {
     font-weight: bold;
     letter-spacing: 0.5px;
+}
+
+/* Theme-aware utility classes */
+.theme-bg {
+    background-color: var(--theme-bg) !important;
+}
+
+.theme-bg-secondary {
+    background-color: var(--theme-bg-secondary) !important;
+}
+
+.theme-text {
+    color: var(--theme-text) !important;
+}
+
+.theme-text-light {
+    color: var(--theme-text-light) !important;
+}
+
+.theme-primary {
+    color: var(--theme-primary) !important;
+}
+
+.theme-primary-bg {
+    background-color: var(--theme-primary) !important;
+    color: white !important;
+}
+
+.theme-primary-dark-bg {
+    background-color: var(--theme-primary-dark) !important;
+    color: white !important;
+}
+
+.theme-accent {
+    color: var(--theme-accent) !important;
+}
+
+.theme-accent-bg {
+    background-color: var(--theme-accent) !important;
+    color: white !important;
+}
+
+.theme-border {
+    border-color: var(--theme-border) !important;
+}
+
+/* Override header */
+header {
+    background-color: var(--theme-bg) !important;
+    border-bottom-color: var(--theme-border) !important;
+    color: var(--theme-text) !important;
+}
+
+/* Override main content */
+main {
+    background-color: var(--theme-bg) !important;
+}
+
+/* Override cards */
+.bg-white {
+    background-color: var(--theme-bg) !important;
+    border-color: var(--theme-border) !important;
+    color: var(--theme-text) !important;
+}
+
+/* Override sidebar */
+#cartSidebar {
+    background-color: var(--theme-bg) !important;
+    color: var(--theme-text) !important;
+}
+
+#cartSidebar div {
+    border-color: var(--theme-border) !important;
+}
+
+/* Override buttons */
+.theme-primary-bg:hover,
+.theme-primary-dark-bg:hover {
+    opacity: 0.9;
+}
+
+/* Override text in buttons */
+button {
+    color: inherit;
+}
+
+/* Override select elements */
+select {
+    background-color: var(--theme-bg) !important;
+    color: var(--theme-text) !important;
+    border-color: var(--theme-border) !important;
 }
 
 /* Smooth scrolling */

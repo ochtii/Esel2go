@@ -39,20 +39,20 @@
 <body class="bg-gray-50 text-gray-900 font-sans">
     
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+    <header class="theme-bg theme-border sticky top-0 z-40 border-b">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex items-center justify-between">
-                <h1 class="text-3xl font-bold text-primary-600">esel2go</h1>
+                <h1 class="text-3xl font-bold theme-primary">esel2go</h1>
                 
                 <!-- Theme & Language Switchers -->
                 <div class="flex items-center gap-4">
-                    <select id="themeSelect" class="px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm font-medium">
+                    <select id="themeSelect" class="px-3 py-2 theme-border theme-bg theme-text border rounded-lg text-sm font-medium">
                         <option value="light">☀️ Light</option>
                         <option value="dark">🌙 Dark</option>
                         <option value="esel-oida">🫏 Esel Oida</option>
                     </select>
                     
-                    <select id="languageSelect" class="px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm font-medium">
+                    <select id="languageSelect" class="px-3 py-2 theme-border theme-bg theme-text border rounded-lg text-sm font-medium">
                         <option value="de">Deutsch</option>
                         <option value="en">English</option>
                     </select>
@@ -70,11 +70,11 @@
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 theme-bg">
         
         <!-- Category Filter -->
         <section class="mb-8">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Kategorien</h2>
+            <h2 class="text-lg font-semibold theme-text mb-4">Kategorien</h2>
             <div id="categoryFilter" class="flex flex-wrap gap-3">
                 <!-- Categories will be rendered here -->
             </div>
@@ -82,7 +82,7 @@
 
         <!-- Products Grid -->
         <section>
-            <h2 class="text-lg font-semibold text-gray-800 mb-6">Unsere Produkte</h2>
+            <h2 class="text-lg font-semibold theme-text mb-6">Unsere Produkte</h2>
             <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Products will be rendered here -->
             </div>
@@ -90,11 +90,11 @@
     </main>
 
     <!-- Cart Sidebar (Modal) -->
-    <aside id="cartSidebar" class="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50 overflow-y-auto">
+    <aside id="cartSidebar" class="fixed right-0 top-0 h-full w-full max-w-md theme-bg shadow-2xl transform translate-x-full transition-transform duration-300 z-50 overflow-y-auto">
         <div class="p-6">
             <!-- Cart Header -->
-            <div class="flex items-center justify-between mb-6 border-b pb-4">
-                <h3 id="cartTitle" class="text-2xl font-bold text-gray-900">Dein Sackl</h3>
+            <div class="flex items-center justify-between mb-6 theme-border border-b pb-4">
+                <h3 id="cartTitle" class="text-2xl font-bold theme-text">Dein Sackl</h3>
                 <button id="cartClose" class="text-gray-500 hover:text-gray-700">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -108,32 +108,32 @@
             </div>
 
             <!-- Empty Cart Message -->
-            <div id="emptyCartMessage" class="text-center py-8 text-gray-500">
+            <div id="emptyCartMessage" class="text-center py-8 theme-text-light">
                 <p class="text-lg">Dein Sackl ist leer, Oida</p>
             </div>
 
             <!-- Cart Summary -->
-            <div id="cartSummary" class="border-t pt-4 space-y-3 hidden">
-                <div class="flex justify-between text-gray-700">
+            <div id="cartSummary" class="theme-border border-t pt-4 space-y-3 hidden">
+                <div class="flex justify-between theme-text">
                     <span>Subtotal:</span>
                     <span id="subtotal">€ 0.00</span>
                 </div>
                 
-                <div class="flex justify-between text-gray-700">
+                <div class="flex justify-between theme-text">
                     <span id="shippingLabel">Versandkosten:</span>
                     <span id="shippingCost">€ 9.90</span>
                 </div>
 
-                <div id="bonusSection" class="bg-green-50 p-3 rounded-lg border border-green-200 hidden">
-                    <p class="text-sm text-green-700 font-semibold">✓ Gratis Seminar hinzugefügt!</p>
+                <div id="bonusSection" class="theme-bg-secondary p-3 rounded border theme-border hidden">
+                    <p class="text-sm theme-text font-semibold">✓ Gratis Seminar hinzugefügt!</p>
                 </div>
 
-                <div class="border-t pt-3 flex justify-between text-lg font-bold">
+                <div class="theme-border border-t pt-3 flex justify-between text-lg font-bold">
                     <span id="totalLabel">Gesamt:</span>
-                    <span id="total" class="text-accent-600">€ 0.00</span>
+                    <span id="total" class="theme-accent">€ 0.00</span>
                 </div>
 
-                <button id="checkoutBtn" class="w-full bg-accent-500 hover:bg-accent-600 text-white font-bold py-3 rounded-lg transition">
+                <button id="checkoutBtn" class="w-full theme-accent-bg hover:opacity-90 font-bold py-3 rounded-lg transition">
                     Zur Kassa, Oida
                 </button>
             </div>
@@ -144,7 +144,7 @@
     <div id="cartOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 right-4 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div id="toast" class="fixed bottom-4 right-4 theme-accent-bg text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
         <span id="toastMessage">Produkt hinzugefügt</span>
     </div>
 

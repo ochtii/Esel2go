@@ -36,8 +36,8 @@ export async function renderCategories() {
     categoryFilter.innerHTML = `
         <button class="category-btn px-6 py-2 rounded-full font-semibold transition
             ${currentFilter === 'all' 
-                ? 'bg-primary-600 text-white' 
-                : 'bg-white text-gray-800 border border-gray-300 hover:border-primary-600'
+                ? 'theme-primary-bg' 
+                : 'theme-bg theme-text theme-border border hover:opacity-80'
             }" data-category="all">
             ${i18n.t('filterAll', 'Alles anzeigen')}
         </button>
@@ -48,8 +48,8 @@ export async function renderCategories() {
         const button = document.createElement('button');
         button.className = `category-btn px-6 py-2 rounded-full font-semibold transition ${
             currentFilter === category.id 
-                ? 'bg-primary-600 text-white' 
-                : 'bg-white text-gray-800 border border-gray-300 hover:border-primary-600'
+                ? 'theme-primary-bg' 
+                : 'theme-bg theme-text theme-border border hover:opacity-80'
         }`;
         button.textContent = category.name;
         button.dataset.category = category.id;
@@ -97,25 +97,25 @@ export async function renderProducts() {
     
     products.forEach(product => {
         const productCard = document.createElement('div');
-        productCard.className = 'bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition';
+        productCard.className = 'theme-bg theme-border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition';
         
         productCard.innerHTML = `
-            <div class="aspect-square overflow-hidden bg-gray-100">
+            <div class="aspect-square overflow-hidden theme-bg-secondary">
                 <img src="${product.image}" alt="${product.name}" 
                     class="w-full h-full object-cover hover:scale-105 transition">
             </div>
             <div class="p-4">
-                <h3 class="font-semibold text-gray-900 text-lg mb-1">${product.name}</h3>
-                <p class="text-gray-600 text-sm mb-3 line-clamp-2">${product.description}</p>
+                <h3 class="font-semibold theme-text text-lg mb-1">${product.name}</h3>
+                <p class="theme-text-light text-sm mb-3 line-clamp-2">${product.description}</p>
                 
                 <div class="flex items-center justify-between mb-4">
-                    <span class="text-2xl font-bold text-accent-600">€ ${product.price.toFixed(2)}</span>
-                    <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                    <span class="text-2xl font-bold theme-accent">€ ${product.price.toFixed(2)}</span>
+                    <span class="text-xs theme-bg-secondary theme-text px-2 py-1 rounded">
                         ${product.origin}
                     </span>
                 </div>
                 
-                <button class="add-to-cart-btn w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 rounded-lg transition"
+                <button class="add-to-cart-btn w-full theme-primary-dark-bg hover:opacity-90 font-semibold py-2 rounded-lg transition"
                     data-product-id="${product.id}">
                     ${i18n.t('addToCart', 'In den Warenkorb')}
                 </button>
@@ -153,25 +153,25 @@ export function renderCartItems() {
     
     cartItemsData.forEach(item => {
         const cartItem = document.createElement('div');
-        cartItem.className = `flex justify-between items-center pb-4 border-b ${
-            item.isBonus ? 'bg-green-50 p-3 rounded border-green-200' : ''
+        cartItem.className = `flex justify-between items-center pb-4 theme-border border-b ${
+            item.isBonus ? 'theme-bg-secondary p-3 rounded border' : ''
         }`;
         
         const itemName = item.isBonus 
-            ? `<span class="text-green-700 font-semibold">✓ ${item.name}</span>`
-            : `<span class="font-medium">${item.name}</span>`;
+            ? `<span class="theme-text font-semibold">✓ ${item.name}</span>`
+            : `<span class="font-medium theme-text">${item.name}</span>`;
         
         cartItem.innerHTML = `
             <div class="flex-1">
                 ${itemName}
-                <div class="text-sm text-gray-500">
+                <div class="text-sm theme-text-light">
                     €${item.price.toFixed(2)} x ${item.quantity}
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <span class="font-semibold">€${(item.price * item.quantity).toFixed(2)}</span>
+                <span class="font-semibold theme-text">€${(item.price * item.quantity).toFixed(2)}</span>
                 ${!item.isBonus ? `
-                    <button class="remove-item text-red-500 hover:text-red-700 transition p-1" 
+                    <button class="remove-item theme-accent hover:opacity-70 transition p-1" 
                         data-product-id="${item.id}">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
@@ -217,11 +217,11 @@ export function updateCartSummary() {
     // Handle free shipping
     if (summary.hasFreeShipping) {
         shippingCostEl.textContent = i18n.t('freeShipping', 'Gratis Lieferung! Leiwand!');
-        shippingCostEl.classList.add('text-green-600', 'font-semibold');
+        shippingCostEl.classList.add('theme-text', 'font-semibold');
         shippingLabel.textContent = '';
     } else {
         shippingCostEl.textContent = `€ ${summary.shippingCost.toFixed(2)}`;
-        shippingCostEl.classList.remove('text-green-600', 'font-semibold');
+        shippingCostEl.classList.remove('theme-text', 'font-semibold');
         shippingLabel.textContent = i18n.t('shippingCost', 'Versandkosten:');
     }
     
