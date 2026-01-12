@@ -251,18 +251,28 @@ async function loadCommitDetails() {
         
         // Prepare file stats
         const files = githubData?.files || data.files || [];
+        
+        // Normalize file data - ensure consistent structure
+        const normalizedFiles = files.map(f => ({
+            file: f.file || f.filename,
+            insertions: parseInt(f.insertions || f.additions) || 0,
+            deletions: parseInt(f.deletions) || 0,
+            status: f.status || (f.insertions || f.additions ? 'modified' : null),
+            previous_filename: f.previous_filename
+        }));
+        
         const stats = githubData?.stats || {
-            additions: files.reduce((sum, f) => sum + (parseInt(f.insertions || f.additions) || 0), 0),
-            deletions: files.reduce((sum, f) => sum + (parseInt(f.deletions) || 0), 0),
+            additions: normalizedFiles.reduce((sum, f) => sum + f.insertions, 0),
+            deletions: normalizedFiles.reduce((sum, f) => sum + f.deletions, 0),
             total: 0
         };
         stats.total = stats.additions + stats.deletions;
         
         // Categorize files
-        const addedFiles = files.filter(f => f.status === 'added');
-        const modifiedFiles = files.filter(f => f.status === 'modified' || (!f.status && (f.insertions || f.deletions)));
-        const deletedFiles = files.filter(f => f.status === 'removed');
-        const renamedFiles = files.filter(f => f.status === 'renamed');
+        const addedFiles = normalizedFiles.filter(f => f.status === 'added');
+        const modifiedFiles = normalizedFiles.filter(f => f.status === 'modified' || (!f.status && (f.insertions || f.deletions)));
+        const deletedFiles = normalizedFiles.filter(f => f.status === 'removed');
+        const renamedFiles = normalizedFiles.filter(f => f.status === 'renamed');
         
         const html = `
             <!-- Commit Header -->
@@ -291,7 +301,7 @@ async function loadCommitDetails() {
                             <span class="flex items-center gap-1 font-mono text-xs bg-gray-200 px-2 py-1 rounded">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
-                                </svg>
+                                </svg>normalizedF
                                 ${data.shortHash || data.hash?.substring(0, 7)}
                             </span>
                         </div>
@@ -325,13 +335,13 @@ async function loadCommitDetails() {
                 ` : ''}
             </div>
 
-            ${files.length > 0 ? `
+            ${normalizedFiles.length > 0 ? `
             <div class="mt-6">
                 <h4 class="font-bold text-lg text-gray-800 mb-4 flex items-center gap-2">
                     <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
-                    Geänderte Dateien (${files.length})
+                    Geänderte Dateien (${normalizedFiles.length})
                 </h4>
                 
                 <!-- File Categories -->
