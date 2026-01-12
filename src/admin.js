@@ -179,8 +179,22 @@ function renderCatalog() {
         return matchesSearch && matchesCategory;
     });
     
-    catalogGrid.innerHTML = filtered.map(product => renderCatalogCard(product)).join('');
-}
+    catalogGrid.innerHTML = filtered.map(product => renderCatalogCard(product)).join('');    
+    // Add event listeners to catalog buttons
+    document.querySelectorAll('.catalog-edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            switchTab('manager');
+            setTimeout(() => editProduct(btn.dataset.id), 100);
+        });
+    });
+    
+    document.querySelectorAll('.catalog-delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteProduct(btn.dataset.id);
+        });
+    });}
 
 /**
  * Render catalog card (simplified view)
@@ -191,27 +205,44 @@ function renderCatalogCard(product) {
     const categoryColor = getCategoryColor(product.categoryId);
     
     return `
-        <div class="catalog-card bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-gray-100 hover:border-purple-200">
+        <div class="catalog-card group bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-gray-100 hover:border-purple-300 hover:shadow-2xl transition-all duration-300">
             <div class="relative h-56 overflow-hidden bg-gradient-to-br from-purple-50 to-pink-50">
-                <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover">
+                <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div class="absolute top-3 right-3">
-                    <span class="text-xs px-3 py-1 ${categoryColor} rounded-full font-semibold shadow-lg">
+                    <span class="text-xs px-3 py-1 ${categoryColor} rounded-full font-semibold shadow-lg backdrop-blur-sm">
                         ${categoryName}
                     </span>
                 </div>
                 ${product.price >= 100 ? '<div class="absolute top-3 left-3"><span class="text-xs px-3 py-1 bg-yellow-400 text-yellow-900 rounded-full font-bold shadow-lg">💎 Premium</span></div>' : ''}
+                
+                <!-- Quick Action Buttons -->
+                <div class="absolute bottom-3 left-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                    <button class="catalog-edit-btn flex-1 px-4 py-2 bg-white/95 backdrop-blur-sm hover:bg-blue-500 text-gray-800 hover:text-white rounded-lg font-semibold text-sm transition-all shadow-lg flex items-center justify-center gap-2" data-id="${product.id}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        Bearbeiten
+                    </button>
+                    <button class="catalog-delete-btn px-4 py-2 bg-white/95 backdrop-blur-sm hover:bg-red-500 text-gray-800 hover:text-white rounded-lg font-semibold text-sm transition-all shadow-lg flex items-center justify-center gap-2" data-id="${product.id}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Löschen
+                    </button>
+                </div>
             </div>
             <div class="p-5">
                 <div class="flex items-start justify-between mb-2">
-                    <h3 class="font-bold text-xl text-gray-800 flex-1">${product.name}</h3>
+                    <h3 class="font-bold text-xl text-gray-800 flex-1 group-hover:text-purple-600 transition-colors">${product.name}</h3>
                     <span class="text-sm font-mono text-gray-400 bg-gray-100 px-2 py-1 rounded ml-2">${product.id}</span>
                 </div>
                 <p class="text-sm text-gray-600 mb-4 line-clamp-2">${product.description}</p>
                 <div class="flex items-center justify-between border-t pt-4 mt-4">
-                    <div class="text-2xl font-bold text-purple-600">€${product.price.toFixed(2)}</div>
+                    <div class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">€${product.price.toFixed(2)}</div>
                     <div class="text-sm text-gray-500 space-y-1">
-                        <div>⏰ ${product.age} Jahre</div>
-                        <div>📍 ${product.origin}</div>
+                        <div class="flex items-center gap-1">⏰ ${product.age} Jahre</div>
+                        <div class="flex items-center gap-1">📍 ${product.origin}</div>
                     </div>
                 </div>
             </div>
@@ -267,37 +298,40 @@ function renderProductCard(product) {
     const category = categories.find(c => c.id === product.categoryId);
     const categoryName = category ? category.name : 'Unbekannt';
     const categoryColor = getCategoryColor(product.categoryId);
+    const isPremium = product.price >= 100;
+    
+    const premiumBadge = isPremium ? '<span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full font-semibold">💎 Premium</span>' : '';
     
     return `
-        <div class="product-card flex flex-col md:flex-row items-start md:items-center gap-4 p-5 border-2 border-gray-100 rounded-2xl hover:border-purple-200 bg-gradient-to-r from-white to-gray-50 animate-slide-in">
+        <div class="product-card flex flex-col md:flex-row items-start md:items-center gap-4 p-5 border-2 border-gray-100 rounded-2xl hover:border-purple-300 hover:shadow-lg bg-gradient-to-r from-white to-gray-50 transition-all duration-300">
             <div class="relative group flex-shrink-0">
-                <img src="${product.image}" alt="${product.name}" class="w-24 h-24 object-cover rounded-xl shadow-md group-hover:shadow-xl transition-shadow">
+                <img src="${product.image}" alt="${product.name}" class="w-24 h-24 object-cover rounded-xl shadow-md group-hover:shadow-xl transition-all">
                 <div class="absolute inset-0 bg-purple-600 bg-opacity-0 group-hover:bg-opacity-10 rounded-xl transition-all"></div>
             </div>
             
             <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 mb-2">
+                <div class="flex items-center gap-2 mb-2 flex-wrap">
                     <span class="text-xs font-mono text-gray-400 bg-gray-100 px-2 py-1 rounded">${product.id}</span>
                     <span class="text-xs px-3 py-1 ${categoryColor} rounded-full font-semibold">${categoryName}</span>
-                    ${product.price >= 100 ? '<span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full">💎 Premium</span>' : ''}
+                    ${premiumBadge}
                 </div>
-                <h3 class="font-bold text-lg text-gray-800 truncate mb-1">${product.name}</h3>
-                <p class="text-sm text-gray-600 line-clamp-2 mb-3">${product.description}</p>
+                <h3 class="font-bold text-lg text-gray-800 mb-1">${product.name}</h3>
+                <p class="text-sm text-gray-600 mb-3 line-clamp-2">${product.description}</p>
                 <div class="flex flex-wrap gap-4 text-sm">
-                    <span class="text-purple-600 font-bold">€${product.price.toFixed(2)}</span>
-                    <span class="text-gray-500">⏰ ${product.age} Jahre</span>
-                    <span class="text-gray-500">📍 ${product.origin}</span>
+                    <span class="text-purple-600 font-bold text-lg">€${product.price.toFixed(2)}</span>
+                    <span class="text-gray-500 flex items-center gap-1">⏰ ${product.age} Jahre</span>
+                    <span class="text-gray-500 flex items-center gap-1">📍 ${product.origin}</span>
                 </div>
             </div>
             
             <div class="flex md:flex-col gap-2 w-full md:w-auto">
-                <button class="edit-btn flex-1 md:flex-none px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:shadow-lg transition font-semibold text-sm flex items-center justify-center gap-2" data-id="${product.id}">
+                <button class="edit-btn flex-1 md:flex-none px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all font-semibold text-sm flex items-center justify-center gap-2" data-id="${product.id}">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                     </svg>
                     Bearbeiten
                 </button>
-                <button class="delete-btn flex-1 md:flex-none px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:shadow-lg transition font-semibold text-sm flex items-center justify-center gap-2" data-id="${product.id}">
+                <button class="delete-btn flex-1 md:flex-none px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all font-semibold text-sm flex items-center justify-center gap-2" data-id="${product.id}">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                     </svg>
