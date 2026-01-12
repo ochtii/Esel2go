@@ -378,6 +378,46 @@ function generateResourceTable(resources) {
             ? '<span class="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 border border-green-200 rounded-lg text-xs font-bold"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Aktiv</span>'
             : '<span class="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-800 border border-red-200 rounded-lg text-xs font-bold"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Inaktiv</span>';
         
+        // Info tooltip content
+        const infoTooltip = `
+            <div class="relative group inline-block">
+                <button class="info-btn text-gray-400 hover:text-blue-600 transition-colors p-1" data-resource-index="${index}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </button>
+                <div class="hidden group-hover:block absolute left-0 top-8 z-50 bg-gray-900 text-white text-xs rounded-lg p-4 shadow-2xl w-80 border border-gray-700">
+                    <div class="space-y-2">
+                        <div class="font-bold text-sm mb-3 border-b border-gray-700 pb-2 text-blue-300">File Details</div>
+                        <div class="grid grid-cols-[80px_1fr] gap-2">
+                            <span class="text-gray-400">Name:</span>
+                            <span class="font-mono text-white break-all">${filename}</span>
+                            
+                            <span class="text-gray-400">Pfad:</span>
+                            <span class="font-mono text-white break-all">${resource.url}</span>
+                            
+                            <span class="text-gray-400">Typ:</span>
+                            <span class="text-white">${resource.type}</span>
+                            
+                            <span class="text-gray-400">Status:</span>
+                            <span class="${resource.cachebuster ? 'text-green-400' : 'text-red-400'} font-semibold">${resource.cachebuster ? '✓ Cache-Buster aktiv' : '✗ Kein Cache-Buster'}</span>
+                            
+                            ${resource.cachebuster ? `
+                            <span class="text-gray-400">Version:</span>
+                            <span class="font-mono text-yellow-300">${resource.version}</span>
+                            ` : ''}
+                            
+                            ${folder ? `
+                            <span class="text-gray-400">Ordner:</span>
+                            <span class="font-mono text-white">${folder}/</span>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div class="absolute -top-2 left-4 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-gray-900"></div>
+                </div>
+            </div>
+        `;
+        
         return `
             <div class="flex flex-col gap-3 p-4 bg-white rounded-xl border-2 ${resource.cachebuster ? 'border-green-200 hover:border-green-300' : 'border-red-200 hover:border-red-300'} transition-all hover:shadow-md">
                 <div class="flex items-start gap-3">
@@ -386,6 +426,7 @@ function generateResourceTable(resources) {
                         <div class="flex items-center gap-2 mb-2 flex-wrap">
                             <span class="text-xs px-2 py-1 ${typeColor} border rounded-lg font-bold whitespace-nowrap">${resource.type}</span>
                             ${statusBadge}
+                            ${infoTooltip}
                         </div>
                         <div class="font-mono text-sm text-gray-800 font-semibold break-all mb-1">${filename}</div>
                         ${folder ? `<div class="text-xs text-gray-500 font-mono">📁 ${folder}/</div>` : ''}
