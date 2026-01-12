@@ -33,10 +33,7 @@
         }
     </script>
     
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
-    
-    <!-- Cache Buster Script - Load early before anything else -->
+    <!-- Cache Buster Script - Load BEFORE CSS Link -->
     <script>
         // Initialize cachebuster early
         (function() {
@@ -61,17 +58,12 @@
             window._cachebusterVersion = version;
             window._cachebusterEnabled = enabled === 'true';
             
-            // Update CSS link with cache buster
-            if (enabled === 'true') {
-                const styleLink = document.querySelector('link[href*="style.css"]');
-                if (styleLink) {
-                    styleLink.href = `assets/css/style.css?v=${version}`;
-                }
-            }
-            
-            console.log(`Cachebuster: ${enabled === 'true' ? 'enabled' : 'disabled'} (v${version.slice(-6)})`);
+            console.log(`[Cachebuster Init] ${enabled === 'true' ? 'enabled' : 'disabled'} (v${version.slice(-6)})`);
         })();
     </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="bg-gray-50 text-gray-900 font-sans theme-light">
     
@@ -224,3 +216,8 @@
             </div>
         </div>
     </footer>
+
+    <!-- Initialize Application -->
+    <script type="module" src="src/main.js"></script>
+</body>
+</html>
