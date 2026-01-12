@@ -56,17 +56,15 @@ function initializeDOMElements() {
     toast = document.getElementById('toast');
     toastMessage = document.getElementById('toastMessage');
     
-    // Debug: log which elements are missing
-    const elements = {
-        categoryFilter, productsGrid, cartToggle, cartClose, cartSidebar,
-        cartOverlay, cartItemsList, emptyCartMessage, cartSummary, cartBadge,
-        themeCycle, themeIcon, navMenu, mobileNav, mobileNavMenu,
-        mobileMenuToggle, toast, toastMessage
+    // Debug: log which critical elements are missing (only for shop-specific elements)
+    const criticalElements = {
+        productsGrid, cartToggle, cartClose, cartSidebar,
+        cartOverlay, cartItemsList, cartSummary, cartBadge
     };
     
-    Object.entries(elements).forEach(([name, element]) => {
+    Object.entries(criticalElements).forEach(([name, element]) => {
         if (!element) {
-            console.warn(`⚠️ Element not found: ${name}`);
+            console.warn(`⚠️ Critical element not found: ${name}`);
         }
     });
     

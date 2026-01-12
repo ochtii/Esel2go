@@ -174,7 +174,7 @@ async function loadTimestamp() {
     }
     
     // If we get here, all attempts failed
-    console.error('All attempts to load build-info.json failed');
+    console.warn('Could not load build-info.json from any path');
     timestampElement.textContent = '(Datum nicht verfügbar)';
 }
 
