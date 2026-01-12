@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T22:27:30Z", "message": "Fix: Disclaimer rendert wieder (footerYear optional)", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T22:30:15Z", "message": "Fix: Disclaimer-Language Fallback + Commit-Info build-info.json Pfade robuster", "author": "Iris Oberegger"}

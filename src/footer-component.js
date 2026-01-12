@@ -40,7 +40,9 @@ export function renderFooter(page = 'shop') {
         disclaimer: {
             year: `© ${new Date().getFullYear()} esel2go - Demo-Projekt`,
             links: [
-                { text: 'ℹ️ Über', href: 'about.html' }
+                { text: 'ℹ️ Über', href: 'about.html' },
+                { text: '🛍️ Shop', href: 'index.html' },
+                { text: '🔧 Admin', href: 'admin.html' }
             ],
             color: 'orange'
         }
@@ -52,14 +54,14 @@ export function renderFooter(page = 'shop') {
     ).join(' ');
 
     return `
-        <footer class="${page === 'disclaimer' ? 'bg-gray-800 text-white' : 'theme-bg-secondary theme-border border-t'} mt-12 py-8">
+        <footer class="theme-bg-secondary theme-border border-t mt-12 py-8">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col gap-4">
-                    <div class="${page === 'disclaimer' ? 'text-gray-400' : 'theme-text-light'} text-sm text-center sm:text-left">
+                    <div class="theme-text-light text-sm text-center sm:text-left">
                         <p>${cfg.year}</p>
                     </div>
                     ${cfg.links.length > 0 ? `<div class="flex flex-wrap gap-3 text-xs justify-center sm:justify-start">${linksHTML}</div>` : ''}
-                    <div class="${page === 'disclaimer' ? 'text-gray-400' : 'theme-text-light'} text-xs text-center sm:text-left">
+                    <div class="theme-text-light text-xs text-center sm:text-left">
                         <p class="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
                             <span>Letzte Änderung: <span id="updateTimestamp">Loading...</span></span>
                             <button id="commitDetailsBtn" class="text-${cfg.color}-500 hover:text-${cfg.color}-600 transition" title="Commit-Details anzeigen">

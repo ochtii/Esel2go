@@ -20,7 +20,7 @@
         })();
     </script>
 </head>
-<body class="bg-gray-50 theme-light min-h-screen">
+<body class="theme-bg theme-text min-h-screen">
     <!-- Header -->
     <header class="bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-lg">
         <div class="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
@@ -87,6 +87,8 @@
             // Setup theme switcher after footer is rendered
             return import(`./src/theme.js?v=${version}`);
         }).then(themeModule => {
+            themeModule.initializeTheme();
+
             // Setup theme switcher buttons
             const themeBtns = document.querySelectorAll('.theme-btn');
             themeBtns.forEach(btn => {
