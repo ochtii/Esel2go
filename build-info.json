@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T21:55:43Z", "message": "Fix: Debug-Konsole Toggle-Button bleibt nach Reload sichtbar (Retry-Mechanismus)", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T22:00:38Z", "message": "Fix: Debug-Konsole wird jetzt nach Footer-Laden importiert, Toggle-Button erscheint zuverlässig", "author": "Iris Oberegger"}

@@ -109,34 +109,21 @@ function createDebugConsole() {
     }
     document.body.appendChild(container);
 
-    // Toggle-Button im Footer (immer sichtbar) - mit Retry falls Footer noch nicht geladen
-    addToggleButtonToFooter();
-    
     // Event-Listener
     document.getElementById('debugConsoleClose').onclick = () => toggleDebugConsole(false);
     document.getElementById('debugConsoleTogglePos').onclick = () => toggleDebugConsolePosition();
+    
+    // Toggle-Button im Footer (bereits im HTML vorhanden) - mit Retry falls Footer noch nicht geladen
+    setupToggleButton();
 }
 
-function addToggleButtonToFooter(retryCount = 0) {
-    let toggleBtn = document.getElementById('debugConsoleToggleBtn');
+function setupToggleButton(retryCount = 0) {
+    const toggleBtn = document.getElementById('debugConsoleToggleBtn');
     if (toggleBtn) {
-        // Button existiert bereits, nur Event-Listener setzen
         toggleBtn.onclick = () => toggleDebugConsole();
-        return;
-    }
-    
-    const footer = document.querySelector('footer .flex.flex-col') || document.querySelector('footer');
-    if (footer) {
-        toggleBtn = document.createElement('button');
-        toggleBtn.id = 'debugConsoleToggleBtn';
-        toggleBtn.className = 'text-xs text-blue-500 hover:text-blue-700 underline ml-4';
-        toggleBtn.innerHTML = '<span>🐞 Debug-Konsole</span>';
-        toggleBtn.style.cursor = 'pointer';
-        toggleBtn.onclick = () => toggleDebugConsole();
-        footer.appendChild(toggleBtn);
-    } else if (retryCount < 10) {
+    } else if (retryCount < 20) {
         // Footer noch nicht geladen, nochmal versuchen
-        setTimeout(() => addToggleButtonToFooter(retryCount + 1), 200);
+        setTimeout(() => setupToggleButton(retryCount + 1), 100);
     }
 }
 

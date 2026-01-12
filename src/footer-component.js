@@ -68,12 +68,17 @@ export function renderFooter(page = 'shop') {
                                 </svg>
                             </button>
                         </p>
-                        <button id="cachebusterStatusBtn" class="text-${cfg.color}-500 hover:text-${cfg.color}-600 underline mt-2 flex items-center gap-1 mx-auto sm:mx-0">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            Cache-Buster Status
-                        </button>
+                        <div class="flex flex-wrap gap-3 mt-2 justify-center sm:justify-start">
+                            <button id="cachebusterStatusBtn" class="text-${cfg.color}-500 hover:text-${cfg.color}-600 underline flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Cache-Buster Status
+                            </button>
+                            <button id="debugConsoleToggleBtn" class="text-${cfg.color}-500 hover:text-${cfg.color}-600 underline flex items-center gap-1">
+                                🐞 Debug-Konsole
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
