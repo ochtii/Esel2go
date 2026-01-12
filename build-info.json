@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T18:15:55Z", "message": "Feature: Tab-basiertes Admin-Panel - Katalog + Manager Ansichten", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T18:16:39Z", "message": "Feature: Admin-Panel mit getrennten Ansichten - Produktkatalog (read-only) + Produktmanager (CRUD)", "author": "Iris Oberegger"}

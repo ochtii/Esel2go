@@ -11,7 +11,8 @@ let translations = {};
  */
 export async function initializeI18n() {
     try {
-        const response = await fetch('./data/translations.json');
+        const version = window._cachebusterVersion || Date.now();
+        const response = await fetch(`./data/translations.json?v=${version}`);
         translations = await response.json();
         
         // Check for saved language preference

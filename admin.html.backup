@@ -14,20 +14,8 @@
     <!-- Tailwind Config -->
     <script src="src/tailwind-config.js"></script>
     
-    <!-- Cache Buster Init (must load before app) -->
-    <script src="src/cachebuster-init.js"></script>
-    
-    <!-- Custom CSS - loaded dynamically with cache busting -->
-    <script>
-        // Load CSS with cache busting
-        (function() {
-            const version = window._cachebusterVersion || Date.now();
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = `assets/css/style.css?v=${version}`;
-            document.head.appendChild(link);
-        })();
-    </script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
     
     <style>
         .card-gradient {
@@ -136,7 +124,7 @@
                         Produktkatalog
                     </div>
                 </button>
-                <button onclick="switchTab('manager')" id="managerTab" class="tab-btn px-6 py-3 font-semibold transition-all border-b-4 border-purple-500 text-purple-600 active">
+                <button onclick="switchTab('manager')" id="managerTab" class="tab-btn px-6 py-3 font-semibold transition-all border-b-4 border-purple-500 text-purple-600">
                     <div class="flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -147,8 +135,8 @@
             </div>
         </div>
         
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <!-- Stats Cards (always visible) -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" id="statsSection">
             <div class="stat-card bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
                 <div class="flex items-center justify-between mb-3">
                     <div class="text-gray-500 text-sm font-semibold uppercase tracking-wide">Produkte</div>
@@ -407,14 +395,6 @@
     </div>
 
     <!-- Admin Script -->
-    <script type="module">
-        // Load admin.js with cache busting
-        const version = window._cachebusterVersion || Date.now();
-        import(`./src/admin.js?v=${version}`).catch(err => {
-            console.error('Failed to load admin.js:', err);
-            // Fallback: try without cache buster
-            import('./src/admin.js');
-        });
-    </script>
+    <script type="module" src="src/admin.js"></script>
 </body>
 </html>
