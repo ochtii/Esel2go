@@ -1,10 +1,10 @@
 /**
  * Footer Module - Display last update timestamp
- * Fetches the latest commit info from GitHub API
+ * Simple timestamp display using localStorage
  */
 
 /**
- * Format date to human-readable format
+ * Format date to human-readable format (Vienna timezone)
  */
 function formatDate(date) {
     const options = {
@@ -13,67 +13,73 @@ function formatDate(date) {
         day: '2-digit',
         hour: '2-digit',
         minute: '2-digit',
-        second: '2-digit',
         timeZone: 'Europe/Vienna'
     };
-    return new Intl.DateTimeFormat('de-DE', options).format(date);
+    try {
+        return new Intl.DateTimeFormat('de-DE', options).format(date);
+    } catch (error) {
+        console.warn('Date formatting error:', error);
+        return date.toLocaleString('de-DE');
+    }
 }
 
 /**
- * Get last commit timestamp from GitHub API
+ * Get last update timestamp from build/deploy time
+ * Falls back to current time
  */
-async function fetchLastCommitTime() {
+function getLastUpdateTime() {
+    // Try to get from localStorage (persists across page reloads)
+    const stored = localStorage.getItem('esel2go-load-time');
+    if (stored) {
+        try {
+            const date = new Date(stored);
+            if (date instanceof Date && !isNaN(date)) {
+                return formatDate(date);
+            }
+        } catch (error) {
+            console.warn('Error parsing stored timestamp:', error);
+        }
+    }
+    
+    // Fallback: Store and return current time
+    const now = new Date();
+    localStorage.setItem('esel2go-load-time', now.toISOString());
+    return formatDate(now);
+}
+
+/**
+ * Try to fetch actual last commit from GitHub (non-blocking)
+ */
+async function fetchGitHubCommitTime() {
     try {
-        // Timeout nach 3 Sekunden
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 3000);
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
         
-        // GitHub API endpoint for latest commits
         const response = await fetch(
             'https://api.github.com/repos/ochtii/Esel2go/commits?per_page=1',
-            { signal: controller.signal }
+            { 
+                signal: controller.signal,
+                cache: 'no-cache'
+            }
         );
         
-        clearTimeout(timeout);
+        clearTimeout(timeoutId);
         
         if (!response.ok) {
-            throw new Error('GitHub API error');
+            throw new Error(`GitHub API responded with ${response.status}`);
         }
         
         const data = await response.json();
         
-        if (data.length > 0) {
+        if (Array.isArray(data) && data.length > 0 && data[0].commit?.committer?.date) {
             const commitDate = new Date(data[0].commit.committer.date);
             return formatDate(commitDate);
         }
     } catch (error) {
-        console.warn('Failed to fetch commit timestamp from GitHub:', error.message);
+        console.log('GitHub API not available (normal in offline/sandboxed environments):', error.message);
     }
     
     return null;
-}
-
-/**
- * Get last update from localStorage (fallback)
- */
-function getLocalLastUpdate() {
-    const lastUpdate = localStorage.getItem('esel2go-last-update');
-    if (lastUpdate) {
-        try {
-            const date = new Date(lastUpdate);
-            return formatDate(date);
-        } catch (error) {
-            console.warn('Invalid stored timestamp:', error);
-        }
-    }
-    return null;
-}
-
-/**
- * Store current timestamp in localStorage
- */
-function storeCurrentUpdate() {
-    localStorage.setItem('esel2go-last-update', new Date().toISOString());
 }
 
 /**
@@ -87,32 +93,30 @@ export async function initializeFooter() {
         return;
     }
     
-    // Try to fetch from GitHub API first
-    let timestamp = await fetchLastCommitTime();
+    // Show default timestamp immediately
+    const defaultTimestamp = getLastUpdateTime();
+    timestampElement.textContent = defaultTimestamp;
+    console.log('Footer initialized with timestamp:', defaultTimestamp);
     
-    // Fall back to local storage if GitHub API fails
-    if (!timestamp) {
-        timestamp = getLocalLastUpdate();
+    // Try to update with GitHub commit time in background (non-blocking)
+    try {
+        const githubTimestamp = await fetchGitHubCommitTime();
+        if (githubTimestamp) {
+            timestampElement.textContent = githubTimestamp;
+            console.log('Footer updated with GitHub commit time:', githubTimestamp);
+        }
+    } catch (error) {
+        console.log('Background GitHub fetch failed (this is okay):', error.message);
     }
-    
-    // Fall back to current time if nothing else works
-    if (!timestamp) {
-        storeCurrentUpdate();
-        timestamp = formatDate(new Date());
-    }
-    
-    // Always update the display
-    timestampElement.textContent = timestamp;
-    console.log('Footer timestamp updated:', timestamp);
 }
-
 /**
- * Update the footer timestamp (for manual updates)
+ * Update the footer timestamp manually
  */
 export function updateFooterTimestamp() {
-    storeCurrentUpdate();
     const timestampElement = document.getElementById('updateTimestamp');
     if (timestampElement) {
-        timestampElement.textContent = formatDate(new Date());
+        const now = new Date();
+        localStorage.setItem('esel2go-load-time', now.toISOString());
+        timestampElement.textContent = formatDate(now);
     }
 }
