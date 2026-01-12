@@ -868,5 +868,5 @@ function initializeCachebusterStatus() {
     console.log('Cache-buster status initialized');
 }
 
-// Initialize on load
-document.addEventListener('DOMContentLoaded', init);
+// Initialize immediately (module is loaded after DOM ready)
+init();

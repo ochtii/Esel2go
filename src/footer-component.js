@@ -121,7 +121,13 @@ async function loadTimestamp() {
     
     try {
         const version = Date.now();
-        const response = await fetch(`./build-info.json?v=${version}`);
+        // Try relative path first (works for admin.html)
+        let response = await fetch(`build-info.json?v=${version}`);
+        
+        // If not found, try root path (works for index.html)
+        if (!response.ok && response.status === 404) {
+            response = await fetch(`./build-info.json?v=${version}`);
+        }
         
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
