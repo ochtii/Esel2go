@@ -99,13 +99,16 @@ function createDebugConsole() {
                 const color = entry.type === 'error' ? 'text-red-400' : entry.type === 'warn' ? 'text-yellow-300' : 'text-blue-200';
                 const time = new Date().toLocaleTimeString();
                 const copyId = 'debugCopyBtn_' + Math.random().toString(36).substr(2, 9);
-                const sourceTag = source ? `<span class="text-xs text-gray-500 font-mono">[${source}]</span> ` : '';
+                // Source-Tag: auf mobil versteckt, auf Desktop sichtbar
+                const sourceTag = source ? `<span class="hidden sm:inline text-xs text-gray-500 font-mono">[${source}]</span> ` : '';
+                // Vollständige Nachricht für Kopieren (mit Source)
+                const fullMessage = source ? `[${source}] ${msg}` : msg;
                 log.innerHTML += `<div class="${color} whitespace-pre-wrap group flex items-start gap-2"><span class="text-xs text-gray-400">[${time}]</span> ${sourceTag}<span class="font-bold">${entry.type}:</span> <span class="flex-1">${msg}</span><button id="${copyId}" class="ml-2 text-xs text-gray-400 hover:text-blue-400 opacity-60 group-hover:opacity-100 transition" title="Meldung kopieren">📋</button></div>`;
                 setTimeout(() => {
                     const btn = document.getElementById(copyId);
                     if (btn) {
                         btn.onclick = () => {
-                            navigator.clipboard.writeText(msg);
+                            navigator.clipboard.writeText(fullMessage);
                             btn.textContent = '✅';
                             setTimeout(() => { btn.textContent = '📋'; }, 1000);
                         };
@@ -210,14 +213,17 @@ function appendToDebugConsole(type, ...args) {
     const color = type === 'error' ? 'text-red-400' : type === 'warn' ? 'text-yellow-300' : 'text-blue-200';
     const time = new Date().toLocaleTimeString();
     const copyId = 'debugCopyBtn_' + Math.random().toString(36).substr(2, 9);
-    const sourceTag = source ? `<span class="text-xs text-gray-500 font-mono">[${source}]</span> ` : '';
+    // Source-Tag: auf mobil versteckt, auf Desktop sichtbar
+    const sourceTag = source ? `<span class="hidden sm:inline text-xs text-gray-500 font-mono">[${source}]</span> ` : '';
+    // Vollständige Nachricht für Kopieren (mit Source)
+    const fullMessage = source ? `[${source}] ${msg}` : msg;
     log.innerHTML += `<div class="${color} whitespace-pre-wrap group flex items-start gap-2"><span class="text-xs text-gray-400">[${time}]</span> ${sourceTag}<span class="font-bold">${type}:</span> <span class="flex-1">${msg}</span><button id="${copyId}" class="ml-2 text-xs text-gray-400 hover:text-blue-400 opacity-60 group-hover:opacity-100 transition" title="Meldung kopieren">📋</button></div>`;
     log.scrollTop = log.scrollHeight;
     setTimeout(() => {
         const btn = document.getElementById(copyId);
         if (btn) {
             btn.onclick = () => {
-                navigator.clipboard.writeText(msg);
+                navigator.clipboard.writeText(fullMessage);
                 btn.textContent = '✅';
                 setTimeout(() => { btn.textContent = '📋'; }, 1000);
             };

@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T22:08:13Z", "message": "Fix: build-info.json Pfad-Erkennung verbessert, Logs reduziert", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T22:10:26Z", "message": "Feature: Debug-Konsole zeigt Datei:Zeile für jede Meldung an (Stack-Trace Auswertung)", "author": "Iris Oberegger"}
