@@ -5,6 +5,7 @@ let debugConsoleVisible = false;
 let debugConsolePosition = 'bottom'; // 'top' oder 'bottom'
 let debugConsoleFilter = { log: true, info: true, warn: true, error: true };
 let debugConsoleLogHistory = [];
+let debugConsoleSizeLocked = false;
 
 function createDebugConsole() {
     if (document.getElementById('debugConsoleContainer')) return;
@@ -17,29 +18,40 @@ function createDebugConsole() {
     container.style.display = 'none';
     
     container.innerHTML = `
-        <div id="debugConsole" class="max-w-4xl mx-auto bg-black/90 text-white rounded-t-xl rounded-b-xl shadow-2xl border border-gray-700 overflow-hidden pointer-events-auto flex flex-col"
-            style="font-family: monospace; font-size: 0.95em; max-height: 40vh;">
-            <div class="flex items-center justify-between px-4 py-2 bg-gray-900 border-b border-gray-700">
+        <div id="debugConsole" class="max-w-4xl mx-auto bg-black/90 text-white rounded-t-xl rounded-b-xl shadow-2xl border border-gray-700 overflow-hidden pointer-events-auto flex flex-col resize-y"
+            style="font-family: monospace; font-size: 0.95em; height: 300px; min-height: 150px; max-height: 80vh;">
+            <div class="flex items-center justify-between px-4 py-2 bg-gray-900 border-b border-gray-700 cursor-move" id="debugConsoleHeader">
                 <div class="flex items-center gap-3">
-                    <span class="font-bold">Debug-Konsole</span>
-                    <button id="debugConsoleTogglePos" class="text-xs bg-gray-700 hover:bg-gray-600 rounded px-2 py-1 ml-2">Oben/Unten</button>
+                    <span class="font-bold">🐞 Debug</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button id="debugConsoleOptionsBtn" class="text-xs bg-gray-700 hover:bg-gray-600 rounded p-1" title="Optionen">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                        <span class="sr-only">Optionen</span>
+                    <button id="debugConsoleOptionsBtn" class="text-xs bg-gray-700 hover:bg-gray-600 rounded p-1" title="Einstellungen">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     </button>
-                    <button id="debugConsoleClose" class="text-xs bg-gray-700 hover:bg-gray-600 rounded px-2 py-1">Schließen</button>
+                    <button id="debugConsoleSizeLock" class="text-xs bg-gray-700 hover:bg-gray-600 rounded p-1" title="Größe sperren/entsperren">
+                        <svg id="debugConsoleLockIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
+                    </button>
+                    <button id="debugConsoleClose" class="text-xs bg-gray-700 hover:bg-gray-600 rounded p-1" title="Schließen">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
                 </div>
             </div>
-            <div id="debugConsoleOptionsMenu" class="hidden absolute right-8 top-12 bg-gray-800 border border-gray-700 rounded-lg shadow-lg p-4 z-50 text-xs space-y-2">
-                <div class="font-bold mb-2">Anzeigen:</div>
-                <label class="flex items-center gap-2"><input type="checkbox" id="debugOptLog" checked> log</label>
-                <label class="flex items-center gap-2"><input type="checkbox" id="debugOptInfo" checked> info</label>
-                <label class="flex items-center gap-2"><input type="checkbox" id="debugOptWarn" checked> warn</label>
-                <label class="flex items-center gap-2"><input type="checkbox" id="debugOptError" checked> error</label>
+            <div id="debugConsoleOptionsMenu" class="hidden absolute right-8 top-12 bg-gray-800 border border-gray-700 rounded-lg shadow-lg p-4 z-50 text-xs space-y-3 w-48">
+                <div class="font-bold mb-2">Einstellungen</div>
+                <div class="space-y-2">
+                    <div class="font-semibold text-gray-400">Position:</div>
+                    <label class="flex items-center gap-2"><input type="radio" name="debugPos" value="top" id="debugPosTop"> Oben</label>
+                    <label class="flex items-center gap-2"><input type="radio" name="debugPos" value="bottom" id="debugPosBottom" checked> Unten</label>
+                </div>
+                <div class="border-t border-gray-700 pt-2 space-y-2">
+                    <div class="font-semibold text-gray-400">Anzeigen:</div>
+                    <label class="flex items-center gap-2"><input type="checkbox" id="debugOptLog" checked> log</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" id="debugOptInfo" checked> info</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" id="debugOptWarn" checked> warn</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" id="debugOptError" checked> error</label>
+                </div>
             </div>
-            <div id="debugConsoleLog" class="overflow-y-auto px-4 py-2" style="max-height: 30vh;"></div>
+            <div id="debugConsoleLog" class="overflow-y-auto px-4 py-2 flex-1"></div>
         </div>
     `;
     // Optionen-Button & Menü
@@ -58,6 +70,33 @@ function createDebugConsole() {
                     }
                 }
             });
+        }
+        
+        // Position Radio-Buttons
+        const posTop = document.getElementById('debugPosTop');
+        const posBottom = document.getElementById('debugPosBottom');
+        if (posTop && posBottom) {
+            posTop.checked = debugConsolePosition === 'top';
+            posBottom.checked = debugConsolePosition === 'bottom';
+            posTop.onchange = () => { if (posTop.checked) toggleDebugConsolePosition('top'); };
+            posBottom.onchange = () => { if (posBottom.checked) toggleDebugConsolePosition('bottom'); };
+        }
+        
+        // Size Lock Button
+        const lockBtn = document.getElementById('debugConsoleSizeLock');
+        const lockIcon = document.getElementById('debugConsoleLockIcon');
+        const consoleEl = document.getElementById('debugConsole');
+        if (lockBtn && consoleEl) {
+            lockBtn.onclick = () => {
+                debugConsoleSizeLocked = !debugConsoleSizeLocked;
+                consoleEl.style.resize = debugConsoleSizeLocked ? 'none' : 'vertical';
+                // Update icon
+                if (lockIcon) {
+                    lockIcon.innerHTML = debugConsoleSizeLocked 
+                        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>'
+                        : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path>';
+                }
+            };
         }
     }, 0);
     // Filter-Optionen initialisieren, sobald Menü im DOM ist
@@ -122,7 +161,6 @@ function createDebugConsole() {
 
     // Event-Listener
     document.getElementById('debugConsoleClose').onclick = () => toggleDebugConsole(false);
-    document.getElementById('debugConsoleTogglePos').onclick = () => toggleDebugConsolePosition();
     
     // Toggle-Button im Footer (bereits im HTML vorhanden) - mit Retry falls Footer noch nicht geladen
     setupToggleButton();
@@ -160,9 +198,20 @@ function toggleDebugConsole(force) {
     }
 }
 
-function toggleDebugConsolePosition() {
-    debugConsolePosition = debugConsolePosition === 'bottom' ? 'top' : 'bottom';
+function toggleDebugConsolePosition(newPos) {
+    if (newPos) {
+        debugConsolePosition = newPos;
+    } else {
+        debugConsolePosition = debugConsolePosition === 'bottom' ? 'top' : 'bottom';
+    }
     setDebugConsolePosition();
+    // Update radio buttons
+    const posTop = document.getElementById('debugPosTop');
+    const posBottom = document.getElementById('debugPosBottom');
+    if (posTop && posBottom) {
+        posTop.checked = debugConsolePosition === 'top';
+        posBottom.checked = debugConsolePosition === 'bottom';
+    }
 }
 
 function setDebugConsolePosition() {

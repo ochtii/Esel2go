@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T22:14:49Z", "message": "UX: Location-Angabe in Debug-Konsole auf mobil versteckt, aber in Zwischenablage kopiert", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T22:16:13Z", "message": "Fix: build-info.json Warnung komplett entfernt (falsch-positiv)", "author": "Iris Oberegger"}
