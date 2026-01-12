@@ -103,10 +103,15 @@ async function renderStartpage() {
  * Render categories on startpage
  */
 async function renderStartpageCategories() {
+    console.log('📦 renderStartpageCategories called');
     const categoriesContainer = document.getElementById('startpageCategories');
-    if (!categoriesContainer) return;
+    if (!categoriesContainer) {
+        console.error('❌ startpageCategories container not found!');
+        return;
+    }
     
     const categories = await api.fetchCategories();
+    console.log(`✓ Loaded ${categories.length} categories:`, categories);
     categoriesContainer.innerHTML = '';
     
     categories.forEach(category => {
@@ -118,6 +123,7 @@ async function renderStartpageCategories() {
         `;
         
         categoryCard.addEventListener('click', () => {
+            console.log(`🔘 Category clicked: ${category.name} (${category.id})`);
             currentFilter = category.id;
             showProductsPage();
             updateNavigation();
@@ -126,17 +132,24 @@ async function renderStartpageCategories() {
         
         categoriesContainer.appendChild(categoryCard);
     });
+    console.log(`✓ Rendered ${categories.length} category cards`);
 }
 
 /**
  * Render products preview on startpage (first 4)
  */
 async function renderStartpageProducts() {
+    console.log('📦 renderStartpageProducts called');
     const productsContainer = document.getElementById('startpageProducts');
-    if (!productsContainer) return;
+    if (!productsContainer) {
+        console.error('❌ startpageProducts container not found!');
+        return;
+    }
     
     const products = await api.fetchProducts();
+    console.log(`✓ Loaded ${products.length} products total`);
     const previewProducts = products.slice(0, 4); // First 4 products
+    console.log(`✓ Showing first ${previewProducts.length} products on startpage`);
     
     productsContainer.innerHTML = '';
     
@@ -162,6 +175,7 @@ async function renderStartpageProducts() {
         
         productsContainer.appendChild(productCard);
     });
+    console.log(`✓ Rendered ${previewProducts.length} product preview cards`);
 }
 
 /**
