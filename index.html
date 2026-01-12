@@ -35,6 +35,43 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- Cache Buster Script - Load early before anything else -->
+    <script>
+        // Initialize cachebuster early
+        (function() {
+            const CACHEBUSTER_ENABLED_KEY = 'cachebuster_enabled';
+            const CACHEBUSTER_VERSION_KEY = 'cachebuster_version';
+            
+            // Get or create version
+            let version = localStorage.getItem(CACHEBUSTER_VERSION_KEY);
+            if (!version) {
+                version = Date.now().toString();
+                localStorage.setItem(CACHEBUSTER_VERSION_KEY, version);
+            }
+            
+            // Check if enabled (default true)
+            let enabled = localStorage.getItem(CACHEBUSTER_ENABLED_KEY);
+            if (enabled === null) {
+                localStorage.setItem(CACHEBUSTER_ENABLED_KEY, 'true');
+                enabled = 'true';
+            }
+            
+            // Store in window for later use
+            window._cachebusterVersion = version;
+            window._cachebusterEnabled = enabled === 'true';
+            
+            // Update CSS link with cache buster
+            if (enabled === 'true') {
+                const styleLink = document.querySelector('link[href*="style.css"]');
+                if (styleLink) {
+                    styleLink.href = `assets/css/style.css?v=${version}`;
+                }
+            }
+            
+            console.log(`Cachebuster: ${enabled === 'true' ? 'enabled' : 'disabled'} (v${version.slice(-6)})`);
+        })();
+    </script>
 </head>
 <body class="bg-gray-50 text-gray-900 font-sans theme-light">
     
@@ -178,6 +215,11 @@
                 </div>
                 <div id="lastUpdate" class="theme-text-light text-sm text-center sm:text-right">
                     <p>Letzte Änderung: <span id="updateTimestamp">Loading...</span></p>
+                </div>
+                <!-- Debug/Cachebuster Controls (hidden by default, toggle with devtools) -->
+                <div id="debugControls" class="hidden theme-text-light text-xs space-y-2">
+                    <button id="cachebusterToggle" class="theme-primary hover:opacity-70 px-2 py-1 rounded transition">Toggle Cache</button>
+                    <button id="cachebusterClear" class="theme-accent hover:opacity-70 px-2 py-1 rounded transition">Clear Cache</button>
                 </div>
             </div>
         </div>

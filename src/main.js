@@ -3,6 +3,7 @@
  * Entry point for the esel2go application
  */
 
+import * as cachebuster from './cachebuster.js';
 import * as i18n from './i18n.js';
 import * as cart from './cart.js';
 import * as ui from './ui.js';
@@ -13,6 +14,10 @@ import * as footer from './footer.js';
  */
 async function initializeApp() {
     try {
+        // 0. Initialize cachebuster
+        console.log('Initializing cachebuster...');
+        await cachebuster.initializeCachebuster();
+        
         // 1. Load translations
         console.log('Loading translations...');
         const translationsLoaded = await i18n.initializeI18n();

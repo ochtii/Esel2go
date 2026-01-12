@@ -7,7 +7,7 @@ import * as api from './api.js';
 import * as cart from './cart.js';
 import * as i18n from './i18n.js';
 import * as theme from './theme.js';
-
+import * as cachebuster from './cachebuster.js';
 // DOM Elements
 const categoryFilter = document.getElementById('categoryFilter');
 const productsGrid = document.getElementById('productsGrid');
@@ -385,7 +385,36 @@ export function setupEventListeners() {
             console.log('Cart Summary:', cart.getCartSummary());
         });
     }
+    
+    // Cachebuster controls (debug mode)
+    const debugControls = document.getElementById('debugControls');
+    const cachebusterToggle = document.getElementById('cachebusterToggle');
+    const cachebusterClear = document.getElementById('cachebusterClear');
+    
+    if (cachebusterToggle) {
+        cachebusterToggle.addEventListener('click', async () => {
+            await toggleCachebusterUI();
+        });
+    }
+    
+    if (cachebusterClear) {
+        cachebusterClear.addEventListener('click', async () => {
+            await clearCachesUI();
+        });
+    }
+    
+    // Enable debug mode with keyboard shortcut (Ctrl+Shift+D)
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+            e.preventDefault();
+            if (debugControls) {
+                debugControls.classList.toggle('hidden');
+                showToast(debugControls.classList.contains('hidden') ? 'Debug Mode OFF' : 'Debug Mode ON');
+            }
+        }
+    });
 }
+
 
 /**
  * Update language select dropdown and translations
@@ -428,4 +457,44 @@ export async function initializeUI() {
     await renderProducts();
     setupEventListeners();
     updateCartUI();
+}
+/**
+ * Show cachebuster status in toast
+ */
+export function showCachebusterStatus() {
+    const status = cachebuster.getCacheStatus();
+    showToast(status.message, 'info');
+}
+
+/**
+ * Toggle cachebuster and show status
+ */
+export async function toggleCachebusterUI() {
+    const newState = cachebuster.toggleCachebuster();
+    
+    if (newState) {
+        showToast('Cachebuster aktiviert - Seite neuladen');
+    } else {
+        showToast('Cachebuster deaktiviert');
+    }
+    
+    console.log(`Cachebuster toggled to: ${newState}`);
+}
+
+/**
+ * Clear all caches from UI
+ */
+export async function clearCachesUI() {
+    try {
+        await cachebuster.clearAllCaches();
+        showToast('Cache und Service Worker geleert', 'success');
+        
+        // Reload page after a short delay
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
+    } catch (error) {
+        showToast('Fehler beim Leeren des Cache', 'error');
+        console.error('Error clearing caches:', error);
+    }
 }
