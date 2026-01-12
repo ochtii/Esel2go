@@ -240,6 +240,12 @@ theme.setTheme('dark')
 localStorage.clear()
 ```
 
+### Build Info
+Die Datei `build-info.json` enthält das Datum der letzten Änderung:
+- Wird automatisch aktualisiert bei jedem Commit (via Pre-Commit Hook)
+- Zeigt das echte Commit-Datum im Footer
+- Hat Fallback zu GitHub API falls nicht verfügbar
+
 ### Häufige Probleme
 
 | Problem | Lösung |
@@ -248,6 +254,7 @@ localStorage.clear()
 | **Module nicht geladen** | Browser-Konsole auf Errors prüfen |
 | **Daten nicht angezeigt** | `/data/` Ordner im Root-Verzeichnis? |
 | **Styles nicht korrekt** | Browser-Cache leeren (Ctrl+Shift+Delete) |
+| **Footer Zeit falsch** | `build-info.json` wurde aktualisiert? |
 
 ---
 
