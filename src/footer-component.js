@@ -200,16 +200,59 @@ async function loadCommitDetails() {
     if (!content) return;
 
     try {
+        // Load local build-info.json
         const version = Date.now();
-        const response = await fetch(`./build-info.json?v=${version}`);
+        const paths = ['build-info.json', './build-info.json'];
+        let data = null;
         
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+        for (const path of paths) {
+            try {
+                const response = await fetch(`${path}?v=${version}`);
+                if (response.ok) {
+                    data = await response.json();
+                    break;
+                }
+            } catch (e) {
+                continue;
+            }
         }
         
-        const data = await response.json();
+        if (!data) {
+            throw new Error('Failed to load build-info.json');
+        }
+        
+        // Try to load additional GitHub API data
+        let githubData = null;
+        try {
+            const githubResponse = await fetch(
+                `https://api.github.com/repos/ochtii/Esel2go/commits/${data.hash}`,
+                { cache: 'no-cache' }
+            );
+            if (githubResponse.ok) {
+                githubData = await githubResponse.json();
+                console.log('GitHub API data loaded:', githubData);
+            }
+        } catch (error) {
+            console.warn('GitHub API not available:', error);
+        }
+        
+        // Prepare file stats
+        const files = githubData?.files || data.files || [];
+        const stats = githubData?.stats || {
+            additions: files.reduce((sum, f) => sum + (parseInt(f.insertions || f.additions) || 0), 0),
+            deletions: files.reduce((sum, f) => sum + (parseInt(f.deletions) || 0), 0),
+            total: 0
+        };
+        stats.total = stats.additions + stats.deletions;
+        
+        // Categorize files
+        const addedFiles = files.filter(f => f.status === 'added');
+        const modifiedFiles = files.filter(f => f.status === 'modified' || (!f.status && (f.insertions || f.deletions)));
+        const deletedFiles = files.filter(f => f.status === 'removed');
+        const renamedFiles = files.filter(f => f.status === 'renamed');
         
         const html = `
+            <!-- Commit Header -->
             <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 border-2 border-gray-200">
                 <div class="flex items-start gap-4 mb-4">
                     <div class="bg-blue-500 text-white p-3 rounded-lg">
@@ -218,13 +261,13 @@ async function loadCommitDetails() {
                         </svg>
                     </div>
                     <div class="flex-1">
-                        <h4 class="text-xl font-bold text-gray-800 mb-1">${data.message || 'Kein Commit-Titel'}</h4>
+                        <h4 class="text-xl font-bold text-gray-800 mb-2">${data.message || githubData?.commit?.message || 'Kein Commit-Titel'}</h4>
                         <div class="flex flex-wrap gap-3 text-sm text-gray-600">
                             <span class="flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                 </svg>
-                                ${data.author || 'Unbekannt'}
+                                ${data.author || githubData?.commit?.author?.name || 'Unbekannt'}
                             </span>
                             <span class="flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -232,43 +275,111 @@ async function loadCommitDetails() {
                                 </svg>
                                 ${data.lastCommit ? new Date(data.lastCommit).toLocaleString('de-AT', { timeZone: 'Europe/Vienna', dateStyle: 'medium', timeStyle: 'short' }) : 'Unbekannt'}
                             </span>
+                            <span class="flex items-center gap-1 font-mono text-xs bg-gray-200 px-2 py-1 rounded">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
+                                </svg>
+                                ${data.shortHash || data.hash?.substring(0, 7)}
+                            </span>
                         </div>
                     </div>
                 </div>
+                
+                <!-- Stats Summary -->
+                <div class="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-300">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-gray-800">${files.length}</div>
+                        <div class="text-xs text-gray-600">Dateien</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-green-600">+${stats.additions}</div>
+                        <div class="text-xs text-gray-600">Hinzugefügt</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-red-600">-${stats.deletions}</div>
+                        <div class="text-xs text-gray-600">Gelöscht</div>
+                    </div>
+                </div>
+                
+                <!-- Overall Progress Bar -->
+                ${stats.total > 0 ? `
+                <div class="mt-4">
+                    <div class="h-3 bg-gray-200 rounded-full overflow-hidden flex">
+                        <div class="bg-green-500" style="width: ${(stats.additions / stats.total) * 100}%"></div>
+                        <div class="bg-red-500" style="width: ${(stats.deletions / stats.total) * 100}%"></div>
+                    </div>
+                </div>
+                ` : ''}
             </div>
 
-            ${data.files && data.files.length > 0 ? `
+            ${files.length > 0 ? `
             <div class="mt-6">
                 <h4 class="font-bold text-lg text-gray-800 mb-4 flex items-center gap-2">
                     <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
-                    Geänderte Dateien (${data.files.length})
+                    Geänderte Dateien (${files.length})
                 </h4>
+                
+                <!-- File Categories -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+                    ${addedFiles.length > 0 ? `<div class="text-center p-2 bg-green-50 rounded-lg border border-green-200"><div class="text-lg font-bold text-green-600">${addedFiles.length}</div><div class="text-xs text-gray-600">Neu</div></div>` : ''}
+                    ${modifiedFiles.length > 0 ? `<div class="text-center p-2 bg-blue-50 rounded-lg border border-blue-200"><div class="text-lg font-bold text-blue-600">${modifiedFiles.length}</div><div class="text-xs text-gray-600">Geändert</div></div>` : ''}
+                    ${deletedFiles.length > 0 ? `<div class="text-center p-2 bg-red-50 rounded-lg border border-red-200"><div class="text-lg font-bold text-red-600">${deletedFiles.length}</div><div class="text-xs text-gray-600">Gelöscht</div></div>` : ''}
+                    ${renamedFiles.length > 0 ? `<div class="text-center p-2 bg-purple-50 rounded-lg border border-purple-200"><div class="text-lg font-bold text-purple-600">${renamedFiles.length}</div><div class="text-xs text-gray-600">Umbenannt</div></div>` : ''}
+                </div>
+                
                 <div class="space-y-3">
-                    ${data.files.map(file => {
-                        const insertions = parseInt(file.insertions) || 0;
+                    ${files.map(file => {
+                        const insertions = parseInt(file.insertions || file.additions) || 0;
                         const deletions = parseInt(file.deletions) || 0;
                         const total = insertions + deletions;
                         const insertPct = total > 0 ? (insertions / total) * 100 : 0;
                         const deletePct = total > 0 ? (deletions / total) * 100 : 0;
                         
+                        const statusColors = {
+                            added: 'bg-green-50 border-green-300',
+                            modified: 'bg-blue-50 border-blue-300',
+                            removed: 'bg-red-50 border-red-300',
+                            renamed: 'bg-purple-50 border-purple-300'
+                        };
+                        const statusIcons = {
+                            added: '✚',
+                            modified: '✎',
+                            removed: '✗',
+                            renamed: '⤷'
+                        };
+                        const statusLabels = {
+                            added: 'Neu',
+                            modified: 'Geändert',
+                            removed: 'Gelöscht',
+                            renamed: 'Umbenannt'
+                        };
+                        const statusColor = statusColors[file.status] || 'bg-white border-gray-200';
+                        const statusIcon = statusIcons[file.status] || '•';
+                        const statusLabel = statusLabels[file.status] || '';
+                        
                         return `
-                            <div class="bg-white rounded-lg p-4 border-2 border-gray-200 hover:border-blue-300 transition-all">
+                            <div class="${statusColor} rounded-lg p-4 border-2 hover:shadow-md transition-all">
                                 <div class="flex items-start justify-between gap-3 mb-2">
-                                    <span class="font-mono text-sm font-semibold text-gray-800 break-all flex-1">${file.file}</span>
-                                    <span class="text-xs text-gray-500 whitespace-nowrap ml-4">
-                                        ${total} Änderung${total !== 1 ? 'en' : ''}
-                                    </span>
+                                    <div class="flex items-center gap-2 flex-1">
+                                        <span class="text-lg">${statusIcon}</span>
+                                        <span class="font-mono text-sm font-semibold text-gray-800 break-all">${file.file || file.filename}</span>
+                                    </div>
+                                    ${statusLabel ? `<span class="text-xs bg-white px-2 py-1 rounded font-semibold text-gray-600">${statusLabel}</span>` : ''}
                                 </div>
-                                <div class="flex items-center gap-2 mb-2">
+                                ${file.previous_filename ? `<div class="text-xs text-gray-500 mb-2 ml-7">← ${file.previous_filename}</div>` : ''}
+                                ${total > 0 ? `
+                                <div class="flex items-center gap-2 mb-2 ml-7">
                                     <span class="text-xs text-green-600 font-semibold">+${insertions}</span>
                                     <span class="text-xs text-red-600 font-semibold">-${deletions}</span>
+                                    <span class="text-xs text-gray-500">(${total} Zeilen)</span>
                                 </div>
-                                <div class="h-2 bg-gray-200 rounded-full overflow-hidden flex">
+                                <div class="h-2 bg-gray-200 rounded-full overflow-hidden flex ml-7">
                                     ${insertions > 0 ? `<div class="bg-green-500" style="width: ${insertPct}%"></div>` : ''}
                                     ${deletions > 0 ? `<div class="bg-red-500" style="width: ${deletePct}%"></div>` : ''}
                                 </div>
+                                ` : ''}
                             </div>
                         `;
                     }).join('')}
@@ -279,6 +390,17 @@ async function loadCommitDetails() {
                 <p>Keine Datei-Details verfügbar</p>
             </div>
             `}
+            
+            ${githubData?.html_url ? `
+            <div class="mt-6 text-center">
+                <a href="${githubData.html_url}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path>
+                    </svg>
+                    Auf GitHub ansehen
+                </a>
+            </div>
+            ` : ''}
         `;
         
         content.innerHTML = html;

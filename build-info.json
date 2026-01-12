@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T20:51:31Z", "message": "Fix: Admin init() direkt aufrufen + build-info Pfad für alle Seiten", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T20:59:32Z", "message": "Fix: Build-info Fetch-Logik mit mehreren Pfad-Versuchen", "author": "Iris Oberegger"}
