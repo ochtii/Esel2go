@@ -24,10 +24,17 @@ function formatDate(date) {
  */
 async function fetchLastCommitTime() {
     try {
+        // Timeout nach 3 Sekunden
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 3000);
+        
         // GitHub API endpoint for latest commits
         const response = await fetch(
-            'https://api.github.com/repos/ochtii/Esel2go/commits?per_page=1'
+            'https://api.github.com/repos/ochtii/Esel2go/commits?per_page=1',
+            { signal: controller.signal }
         );
+        
+        clearTimeout(timeout);
         
         if (!response.ok) {
             throw new Error('GitHub API error');
@@ -40,7 +47,7 @@ async function fetchLastCommitTime() {
             return formatDate(commitDate);
         }
     } catch (error) {
-        console.warn('Failed to fetch commit timestamp from GitHub:', error);
+        console.warn('Failed to fetch commit timestamp from GitHub:', error.message);
     }
     
     return null;
@@ -94,7 +101,9 @@ export async function initializeFooter() {
         timestamp = formatDate(new Date());
     }
     
+    // Always update the display
     timestampElement.textContent = timestamp;
+    console.log('Footer timestamp updated:', timestamp);
 }
 
 /**

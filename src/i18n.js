@@ -11,7 +11,7 @@ let translations = {};
  */
 export async function initializeI18n() {
     try {
-        const response = await fetch('/data/translations.json');
+        const response = await fetch('./data/translations.json');
         translations = await response.json();
         
         // Check for saved language preference

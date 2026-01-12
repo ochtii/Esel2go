@@ -81,9 +81,11 @@ function applyTheme(themeName) {
     root.style.setProperty('--theme-border', theme.colors.border);
     
     // Add theme class to body for CSS selectors
-    document.body.classList.remove('theme-light', 'theme-dark', 'theme-esel-oida');
-    document.body.classList.add(`theme-${themeName}`);
+    const body = document.body;
+    body.classList.remove('theme-light', 'theme-dark', 'theme-esel-oida');
+    body.classList.add(`theme-${themeName}`);
     
+    console.log('Theme applied:', themeName);
     return true;
 }
 

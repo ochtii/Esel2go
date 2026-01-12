@@ -16,7 +16,7 @@ export async function fetchCategories() {
     }
     
     try {
-        const response = await fetch('/data/categories.json');
+        const response = await fetch('./data/categories.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         cachedCategories = await response.json();
         return cachedCategories;
@@ -36,7 +36,7 @@ export async function fetchProducts() {
     }
     
     try {
-        const response = await fetch('/data/products.json');
+        const response = await fetch('./data/products.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         cachedProducts = await response.json();
         return cachedProducts;
