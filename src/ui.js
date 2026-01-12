@@ -39,42 +39,27 @@ function closeMenus() {
 }
 
 /**
- * Render landing page
+ * Render startpage content (welcome, categories, new products)
  */
-async function renderLandingPage() {
-    const landingPage = document.getElementById('landingPage');
-    const productsSection = document.getElementById('productsSection');
-    const startShoppingBtn = document.getElementById('startShoppingBtn');
-    
-    // Show landing page
-    landingPage.classList.remove('hidden');
-    productsSection.classList.add('hidden');
-    
+async function renderStartpage() {
     // Set welcome message
     const welcomeMsg = document.getElementById('welcomeMessage');
     if (welcomeMsg) {
         welcomeMsg.textContent = welcome.getRandomWelcome();
     }
     
-    // Render categories
-    await renderLandingCategories();
+    // Render categories on startpage
+    await renderStartpageCategories();
     
-    // Render new products
-    await renderNewProducts();
-    
-    // Start shopping button
-    if (startShoppingBtn) {
-        startShoppingBtn.addEventListener('click', () => {
-            hideLandingPage();
-        });
-    }
+    // Render new products on startpage
+    await renderStartpageNewProducts();
 }
 
 /**
- * Render categories on landing page
+ * Render categories on startpage
  */
-async function renderLandingCategories() {
-    const categoriesContainer = document.getElementById('landingCategories');
+async function renderStartpageCategories() {
+    const categoriesContainer = document.getElementById('startpageCategories');
     if (!categoriesContainer) return;
     
     const categories = await api.fetchCategories();
@@ -90,7 +75,6 @@ async function renderLandingCategories() {
         
         categoryCard.addEventListener('click', () => {
             currentFilter = category.id;
-            hideLandingPage();
             updateNavigation();
             renderProducts();
         });
@@ -100,10 +84,10 @@ async function renderLandingCategories() {
 }
 
 /**
- * Render new products (last 4)
+ * Render new products on startpage (last 4)
  */
-async function renderNewProducts() {
-    const newProductsContainer = document.getElementById('newProductsGrid');
+async function renderStartpageNewProducts() {
+    const newProductsContainer = document.getElementById('startpageNewProducts');
     if (!newProductsContainer) return;
     
     const products = await api.fetchProducts();
@@ -133,17 +117,6 @@ async function renderNewProducts() {
         
         newProductsContainer.appendChild(productCard);
     });
-}
-
-/**
- * Hide landing page and show products
- */
-function hideLandingPage() {
-    const landingPage = document.getElementById('landingPage');
-    const productsSection = document.getElementById('productsSection');
-    
-    landingPage.classList.add('hidden');
-    productsSection.classList.remove('hidden');
 }
 
 /**
@@ -548,8 +521,8 @@ export async function initializeUI() {
     updateThemeIcon(theme.getCurrentTheme());
     updateTranslations();
     await renderNavigation();
+    await renderStartpage();
     await renderProducts();
-    await renderLandingPage();
     setupEventListeners();
     updateCartUI();
 }
