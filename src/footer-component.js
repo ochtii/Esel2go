@@ -251,6 +251,7 @@ async function loadCommitDetails() {
         
         // Prepare file stats
         const files = githubData?.files || data.files || [];
+        console.log('Raw files data:', files);
         
         // Normalize file data - ensure consistent structure
         const normalizedFiles = files.map(f => ({
@@ -260,6 +261,8 @@ async function loadCommitDetails() {
             status: f.status || (f.insertions || f.additions ? 'modified' : null),
             previous_filename: f.previous_filename
         }));
+        
+        console.log('Normalized files:', normalizedFiles);
         
         const stats = githubData?.stats || {
             additions: normalizedFiles.reduce((sum, f) => sum + f.insertions, 0),
