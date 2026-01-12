@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T22:05:33Z", "message": "Fix: UI-Warnungen reduziert, build-info.json Fehler als Warnung statt Error", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T22:08:13Z", "message": "Fix: build-info.json Pfad-Erkennung verbessert, Logs reduziert", "author": "Iris Oberegger"}

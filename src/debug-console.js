@@ -82,8 +82,15 @@ function createDebugConsole() {
         log.innerHTML = '';
         debugConsoleLogHistory.forEach(entry => {
             if (debugConsoleFilter[entry.type]) {
-                // Nur anzeigen, wenn Filter aktiv
-                const msg = entry.args.map(a => {
+                // Extract source location if first arg looks like "file.js:123"
+                let source = '';
+                let messageArgs = entry.args;
+                if (entry.args.length > 0 && typeof entry.args[0] === 'string' && /^[^:]+:\d+$/.test(entry.args[0])) {
+                    source = entry.args[0];
+                    messageArgs = entry.args.slice(1);
+                }
+                
+                const msg = messageArgs.map(a => {
                     if (typeof a === 'object') {
                         try { return JSON.stringify(a, null, 2); } catch { return '[Objekt]'; }
                     }
@@ -92,7 +99,8 @@ function createDebugConsole() {
                 const color = entry.type === 'error' ? 'text-red-400' : entry.type === 'warn' ? 'text-yellow-300' : 'text-blue-200';
                 const time = new Date().toLocaleTimeString();
                 const copyId = 'debugCopyBtn_' + Math.random().toString(36).substr(2, 9);
-                log.innerHTML += `<div class="${color} whitespace-pre-wrap group flex items-start gap-2"><span class="text-xs text-gray-400">[${time}]</span> <span class="font-bold">${entry.type}:</span> <span class="flex-1">${msg}</span><button id="${copyId}" class="ml-2 text-xs text-gray-400 hover:text-blue-400 opacity-60 group-hover:opacity-100 transition" title="Meldung kopieren">📋</button></div>`;
+                const sourceTag = source ? `<span class="text-xs text-gray-500 font-mono">[${source}]</span> ` : '';
+                log.innerHTML += `<div class="${color} whitespace-pre-wrap group flex items-start gap-2"><span class="text-xs text-gray-400">[${time}]</span> ${sourceTag}<span class="font-bold">${entry.type}:</span> <span class="flex-1">${msg}</span><button id="${copyId}" class="ml-2 text-xs text-gray-400 hover:text-blue-400 opacity-60 group-hover:opacity-100 transition" title="Meldung kopieren">📋</button></div>`;
                 setTimeout(() => {
                     const btn = document.getElementById(copyId);
                     if (btn) {
@@ -184,7 +192,16 @@ function appendToDebugConsole(type, ...args) {
     if (!log) return;
     debugConsoleLogHistory.push({ type, args });
     if (!debugConsoleFilter[type]) return;
-    const msg = args.map(a => {
+    
+    // Extract source location if first arg looks like "file.js:123"
+    let source = '';
+    let messageArgs = args;
+    if (args.length > 0 && typeof args[0] === 'string' && /^[^:]+:\d+$/.test(args[0])) {
+        source = args[0];
+        messageArgs = args.slice(1);
+    }
+    
+    const msg = messageArgs.map(a => {
         if (typeof a === 'object') {
             try { return JSON.stringify(a, null, 2); } catch { return '[Objekt]'; }
         }
@@ -193,7 +210,8 @@ function appendToDebugConsole(type, ...args) {
     const color = type === 'error' ? 'text-red-400' : type === 'warn' ? 'text-yellow-300' : 'text-blue-200';
     const time = new Date().toLocaleTimeString();
     const copyId = 'debugCopyBtn_' + Math.random().toString(36).substr(2, 9);
-    log.innerHTML += `<div class="${color} whitespace-pre-wrap group flex items-start gap-2"><span class="text-xs text-gray-400">[${time}]</span> <span class="font-bold">${type}:</span> <span class="flex-1">${msg}</span><button id="${copyId}" class="ml-2 text-xs text-gray-400 hover:text-blue-400 opacity-60 group-hover:opacity-100 transition" title="Meldung kopieren">📋</button></div>`;
+    const sourceTag = source ? `<span class="text-xs text-gray-500 font-mono">[${source}]</span> ` : '';
+    log.innerHTML += `<div class="${color} whitespace-pre-wrap group flex items-start gap-2"><span class="text-xs text-gray-400">[${time}]</span> ${sourceTag}<span class="font-bold">${type}:</span> <span class="flex-1">${msg}</span><button id="${copyId}" class="ml-2 text-xs text-gray-400 hover:text-blue-400 opacity-60 group-hover:opacity-100 transition" title="Meldung kopieren">📋</button></div>`;
     log.scrollTop = log.scrollHeight;
     setTimeout(() => {
         const btn = document.getElementById(copyId);
@@ -214,20 +232,48 @@ function appendToDebugConsole(type, ...args) {
     const origError = console.error;
     const origInfo = console.info;
 
+    function getCallerInfo() {
+        try {
+            const stack = new Error().stack;
+            if (!stack) return '';
+            const lines = stack.split('\n');
+            // Skip first 3 lines (Error, getCallerInfo, console hook)
+            for (let i = 3; i < lines.length; i++) {
+                const line = lines[i];
+                // Match file:line:column pattern
+                const match = line.match(/\((.*):(\d+):(\d+)\)/) || line.match(/at (.*):(\d+):(\d+)/);
+                if (match) {
+                    const fullPath = match[1];
+                    const lineNum = match[2];
+                    // Extract filename from full path
+                    const fileName = fullPath.split('/').pop().split('?')[0];
+                    return `${fileName}:${lineNum}`;
+                }
+            }
+        } catch (e) {
+            return '';
+        }
+        return '';
+    }
+
     console.log = function(...args) {
-        appendToDebugConsole('log', ...args);
+        const source = getCallerInfo();
+        appendToDebugConsole('log', source, ...args);
         origLog.apply(console, args);
     };
     console.warn = function(...args) {
-        appendToDebugConsole('warn', ...args);
+        const source = getCallerInfo();
+        appendToDebugConsole('warn', source, ...args);
         origWarn.apply(console, args);
     };
     console.error = function(...args) {
-        appendToDebugConsole('error', ...args);
+        const source = getCallerInfo();
+        appendToDebugConsole('error', source, ...args);
         origError.apply(console, args);
     };
     console.info = function(...args) {
-        appendToDebugConsole('info', ...args);
+        const source = getCallerInfo();
+        appendToDebugConsole('info', source, ...args);
         origInfo.apply(console, args);
     };
 
