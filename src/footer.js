@@ -108,7 +108,19 @@ export async function initializeFooter() {
         timestampElement.textContent = timestamp;
         console.log('✓ Footer timestamp displayed:', timestamp);
     } else {
-        timestampElement.textContent = '(Datum nicht verfügbar)';
-        console.warn('⚠ Could not fetch last commit time');
+        // Fallback: show current date
+        const now = new Date();
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZone: 'Europe/Vienna'
+        };
+        const fallbackDate = new Intl.DateTimeFormat('de-DE', options).format(now);
+        timestampElement.textContent = fallbackDate + ' (aktuell)';
+        console.warn('⚠ Using current date as fallback');
     }
 }
