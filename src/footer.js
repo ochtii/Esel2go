@@ -171,41 +171,41 @@ async function loadCachebusterStatus() {
     const resources = collectLoadedResources();
     
     const html = `
-        <div class="bg-gradient-to-r from-orange-50 to-orange-100 border-2 border-orange-200 rounded-xl p-6 mb-6">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="bg-orange-500 text-white p-3 rounded-lg">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="bg-gradient-to-r from-orange-500 to-amber-600 text-white rounded-xl p-6 mb-6 shadow-lg">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold text-gray-800">Cache-Buster ${enabled ? 'Aktiv' : 'Deaktiviert'}</h3>
-                    <p class="text-sm text-gray-600">Version: ${version}</p>
+                    <h3 class="text-2xl font-bold mb-1">Cache-Buster ${enabled ? '✓ Aktiv' : '✗ Deaktiviert'}</h3>
+                    <p class="text-orange-100 font-medium">Version: ${version}</p>
                 </div>
             </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-                <div class="bg-white rounded-lg p-3 text-center">
-                    <div class="text-2xl font-bold text-orange-600">${resources.total}</div>
-                    <div class="text-xs text-gray-500">Geladene Dateien</div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
+                    <div class="text-3xl font-bold mb-1">${resources.total}</div>
+                    <div class="text-sm text-orange-100">Dateien Total</div>
                 </div>
-                <div class="bg-white rounded-lg p-3 text-center">
-                    <div class="text-2xl font-bold text-green-600">${resources.withCachebuster}</div>
-                    <div class="text-xs text-gray-500">Mit Cache-Buster</div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
+                    <div class="text-3xl font-bold mb-1">${resources.withCachebuster}</div>
+                    <div class="text-sm text-orange-100">Mit Cache-Buster</div>
                 </div>
-                <div class="bg-white rounded-lg p-3 text-center">
-                    <div class="text-2xl font-bold text-blue-600">${resources.json}</div>
-                    <div class="text-xs text-gray-500">JSON Dateien</div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
+                    <div class="text-3xl font-bold mb-1">${resources.scripts}</div>
+                    <div class="text-sm text-orange-100">JavaScript</div>
                 </div>
-                <div class="bg-white rounded-lg p-3 text-center">
-                    <div class="text-2xl font-bold text-purple-600">${resources.scripts}</div>
-                    <div class="text-xs text-gray-500">JavaScript</div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
+                    <div class="text-3xl font-bold mb-1">${resources.json}</div>
+                    <div class="text-sm text-orange-100">JSON Dateien</div>
                 </div>
             </div>
         </div>
         
         <div class="space-y-4">
-            <h4 class="font-bold text-lg text-gray-800 flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <h4 class="font-bold text-xl text-gray-800 flex items-center gap-2">
+                <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
                 Geladene Ressourcen
@@ -213,17 +213,17 @@ async function loadCachebusterStatus() {
             ${generateResourceTable(resources.list)}
         </div>
         
-        <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <h4 class="font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="mt-6 p-5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-200">
+            <h4 class="font-bold text-gray-800 mb-2 flex items-center gap-2">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                Cache-Buster Info
+                Was ist der Cache-Buster?
             </h4>
-            <p class="text-sm text-gray-600">
-                Der Cache-Buster fügt automatisch Versions-Parameter zu allen Ressourcen hinzu, 
-                um sicherzustellen, dass Browser immer die neueste Version laden. 
-                Version wird bei jedem Deployment aktualisiert.
+            <p class="text-gray-700 leading-relaxed">
+                Der Cache-Buster fügt automatisch <strong>?v=Parameter</strong> zu allen Ressourcen hinzu. 
+                Das stellt sicher, dass Browser immer die neueste Version laden und nicht alte, 
+                gecachte Dateien verwenden. Die Version wird bei jedem Deployment automatisch aktualisiert.
             </p>
         </div>
     `;
@@ -258,6 +258,34 @@ function collectLoadedResources() {
             cachebuster: hasCachebuster,
             version: hasCachebuster ? extractVersion(src) : 'N/A'
         });
+    });
+    
+    // Add dynamically loaded ES modules (main.js, admin.js, etc.)
+    const dynamicModules = [
+        { name: 'main.js', loaded: window.location.pathname.includes('index.html') || !window.location.pathname.includes('admin.html') },
+        { name: 'admin.js', loaded: window.location.pathname.includes('admin.html') },
+        { name: 'api.js', loaded: true },
+        { name: 'cart.js', loaded: true },
+        { name: 'ui.js', loaded: true },
+        { name: 'i18n.js', loaded: true },
+        { name: 'footer.js', loaded: true },
+        { name: 'theme.js', loaded: true },
+        { name: 'welcome.js', loaded: true }
+    ];
+    
+    dynamicModules.forEach(module => {
+        if (module.loaded) {
+            resources.total++;
+            resources.scripts++;
+            resources.withCachebuster++;
+            
+            resources.list.push({
+                type: 'JavaScript Module',
+                url: `src/${module.name}`,
+                cachebuster: true,
+                version: window._cachebusterVersion || 'Dynamic'
+            });
+        }
     });
     
     // Get all stylesheets
@@ -326,41 +354,44 @@ function extractVersion(url) {
  */
 function generateResourceTable(resources) {
     if (resources.length === 0) {
-        return '<p class="text-gray-500 text-sm">Keine Ressourcen gefunden</p>';
+        return '<p class="text-gray-500 text-center py-8">Keine Ressourcen gefunden</p>';
     }
     
     const rows = resources.map((resource, index) => {
         const statusIcon = resource.cachebuster 
-            ? '<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>'
-            : '<svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+            ? '<svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>'
+            : '<svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
         
         const typeColor = {
-            'JavaScript': 'bg-yellow-100 text-yellow-700',
-            'CSS': 'bg-blue-100 text-blue-700',
-            'JSON Data': 'bg-green-100 text-green-700'
-        }[resource.type] || 'bg-gray-100 text-gray-700';
+            'JavaScript': 'bg-yellow-100 text-yellow-800 border-yellow-200',
+            'JavaScript Module': 'bg-amber-100 text-amber-800 border-amber-200',
+            'CSS': 'bg-blue-100 text-blue-800 border-blue-200',
+            'JSON Data': 'bg-green-100 text-green-800 border-green-200'
+        }[resource.type] || 'bg-gray-100 text-gray-800 border-gray-200';
         
         // Extract filename from URL
         const filename = resource.url.split('/').pop().split('?')[0];
         
+        const statusBadge = resource.cachebuster
+            ? '<span class="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-800 border border-green-200 rounded-full text-xs font-bold"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Cache-Buster Aktiv</span>'
+            : '<span class="inline-flex items-center gap-1 px-3 py-1 bg-red-100 text-red-800 border border-red-200 rounded-full text-xs font-bold"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Kein Cache-Buster</span>';
+        
         return `
-            <div class="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200 hover:border-orange-300 transition">
-                <div class="flex-shrink-0">${statusIcon}</div>
+            <div class="flex items-start gap-4 p-4 bg-white rounded-xl border-2 ${resource.cachebuster ? 'border-green-200 hover:border-green-300' : 'border-red-200 hover:border-red-300'} transition-all hover:shadow-md">
+                <div class="flex-shrink-0 mt-1">${statusIcon}</div>
                 <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="text-xs px-2 py-1 ${typeColor} rounded-full font-semibold">${resource.type}</span>
-                        <span class="text-sm font-medium text-gray-800 truncate">${filename}</span>
+                    <div class="flex items-center gap-2 mb-2 flex-wrap">
+                        <span class="text-xs px-3 py-1 ${typeColor} border rounded-full font-bold">${resource.type}</span>
+                        <span class="text-base font-bold text-gray-800">${filename}</span>
                     </div>
-                    <div class="text-xs text-gray-500 flex items-center gap-2">
-                        <span class="font-mono ${resource.cachebuster ? 'text-green-600' : 'text-red-600'}">
-                            ${resource.cachebuster ? '✓ Cache-Buster' : '✗ Kein Cache-Buster'}
-                        </span>
-                        ${resource.cachebuster ? `<span class="text-gray-400">|</span><span>v${resource.version}</span>` : ''}
+                    <div class="flex items-center gap-3 flex-wrap">
+                        ${statusBadge}
+                        ${resource.cachebuster ? `<span class="text-sm text-gray-600">Version: <span class="font-mono font-semibold">${resource.version}</span></span>` : ''}
                     </div>
                 </div>
             </div>
         `;
     }).join('');
     
-    return `<div class="space-y-2">${rows}</div>`;
+    return `<div class="space-y-3">${rows}</div>`;
 }
