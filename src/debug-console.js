@@ -29,7 +29,7 @@ function createDebugConsole() {
     `;
     document.body.appendChild(container);
 
-    // Toggle-Button im Footer
+    // Toggle-Button im Footer (immer sichtbar)
     let toggleBtn = document.getElementById('debugConsoleToggleBtn');
     if (!toggleBtn) {
         toggleBtn = document.createElement('button');
@@ -42,8 +42,7 @@ function createDebugConsole() {
             footer.appendChild(toggleBtn);
         }
     }
-
-    // Event-Listener
+    // Event-Listener (immer setzen, Button bleibt erhalten)
     toggleBtn.onclick = () => toggleDebugConsole();
     document.getElementById('debugConsoleClose').onclick = () => toggleDebugConsole(false);
     document.getElementById('debugConsoleTogglePos').onclick = () => toggleDebugConsolePosition();
@@ -55,6 +54,20 @@ function toggleDebugConsole(force) {
     if (!container) return;
     container.style.display = debugConsoleVisible ? 'block' : 'none';
     setDebugConsolePosition();
+    // Sichtfeld begrenzen: body-margin anpassen
+    const marginSize = container.offsetHeight || 180;
+    if (debugConsoleVisible) {
+        if (debugConsolePosition === 'bottom') {
+            document.body.style.marginBottom = marginSize + 'px';
+            document.body.style.marginTop = '';
+        } else {
+            document.body.style.marginTop = marginSize + 'px';
+            document.body.style.marginBottom = '';
+        }
+    } else {
+        document.body.style.marginBottom = '';
+        document.body.style.marginTop = '';
+    }
 }
 
 function toggleDebugConsolePosition() {
@@ -65,10 +78,26 @@ function toggleDebugConsolePosition() {
 function setDebugConsolePosition() {
     const container = document.getElementById('debugConsoleContainer');
     if (!container) return;
-    container.style.top = debugConsoleVisible && debugConsolePosition === 'top' ? '0' : '';
-    container.style.bottom = debugConsoleVisible && debugConsolePosition === 'bottom' ? '0' : '';
-    container.style.top = debugConsoleVisible && debugConsolePosition === 'top' ? '0' : '';
-    container.style.bottom = debugConsoleVisible && debugConsolePosition === 'bottom' ? '0' : '';
+    // Reset
+    container.style.top = '';
+    container.style.bottom = '';
+    if (debugConsoleVisible && debugConsolePosition === 'top') {
+        container.style.top = '0';
+    }
+    if (debugConsoleVisible && debugConsolePosition === 'bottom') {
+        container.style.bottom = '0';
+    }
+    // Sichtfeld anpassen, falls Position geändert wird
+    if (debugConsoleVisible) {
+        const marginSize = container.offsetHeight || 180;
+        if (debugConsolePosition === 'bottom') {
+            document.body.style.marginBottom = marginSize + 'px';
+            document.body.style.marginTop = '';
+        } else {
+            document.body.style.marginTop = marginSize + 'px';
+            document.body.style.marginBottom = '';
+        }
+    }
 }
 
 function appendToDebugConsole(type, ...args) {
