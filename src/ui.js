@@ -9,33 +9,77 @@ import * as i18n from './i18n.js';
 import * as theme from './theme.js';
 import * as cachebuster from './cachebuster.js';
 import * as welcome from './welcome.js';
-// DOM Elements
-const categoryFilter = document.getElementById('categoryFilter');
-const productsGrid = document.getElementById('productsGrid');
-const cartToggle = document.getElementById('cartToggle');
-const cartClose = document.getElementById('cartClose');
-const cartSidebar = document.getElementById('cartSidebar');
-const cartOverlay = document.getElementById('cartOverlay');
-const cartItemsList = document.getElementById('cartItemsList');
-const emptyCartMessage = document.getElementById('emptyCartMessage');
-const cartSummary = document.getElementById('cartSummary');
-const cartBadge = document.getElementById('cartBadge');
-const themeCycle = document.getElementById('themeCycle');
-const themeIcon = document.getElementById('themeIcon');
-const navMenu = document.getElementById('navMenu');
-const mobileNav = document.getElementById('mobileNav');
-const mobileNavMenu = document.getElementById('mobileNavMenu');
-const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-const toast = document.getElementById('toast');
-const toastMessage = document.getElementById('toastMessage');
+
+// DOM Elements - initialized later
+let categoryFilter;
+let productsGrid;
+let cartToggle;
+let cartClose;
+let cartSidebar;
+let cartOverlay;
+let cartItemsList;
+let emptyCartMessage;
+let cartSummary;
+let cartBadge;
+let themeCycle;
+let themeIcon;
+let navMenu;
+let mobileNav;
+let mobileNavMenu;
+let mobileMenuToggle;
+let toast;
+let toastMessage;
 
 let currentFilter = 'all';
+
+/**
+ * Initialize DOM element references
+ */
+function initializeDOMElements() {
+    console.log('Initializing DOM elements...');
+    categoryFilter = document.getElementById('categoryFilter');
+    productsGrid = document.getElementById('productsGrid');
+    cartToggle = document.getElementById('cartToggle');
+    cartClose = document.getElementById('cartClose');
+    cartSidebar = document.getElementById('cartSidebar');
+    cartOverlay = document.getElementById('cartOverlay');
+    cartItemsList = document.getElementById('cartItemsList');
+    emptyCartMessage = document.getElementById('emptyCartMessage');
+    cartSummary = document.getElementById('cartSummary');
+    cartBadge = document.getElementById('cartBadge');
+    themeCycle = document.getElementById('themeCycle');
+    themeIcon = document.getElementById('themeIcon');
+    navMenu = document.getElementById('navMenu');
+    mobileNav = document.getElementById('mobileNav');
+    mobileNavMenu = document.getElementById('mobileNavMenu');
+    mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    toast = document.getElementById('toast');
+    toastMessage = document.getElementById('toastMessage');
+    
+    // Debug: log which elements are missing
+    const elements = {
+        categoryFilter, productsGrid, cartToggle, cartClose, cartSidebar,
+        cartOverlay, cartItemsList, emptyCartMessage, cartSummary, cartBadge,
+        themeCycle, themeIcon, navMenu, mobileNav, mobileNavMenu,
+        mobileMenuToggle, toast, toastMessage
+    };
+    
+    Object.entries(elements).forEach(([name, element]) => {
+        if (!element) {
+            console.warn(`⚠️ Element not found: ${name}`);
+        }
+    });
+    
+    console.log('✓ DOM elements initialized');
+}
 
 /**
  * Close mobile menus
  */
 function closeMenus() {
-    mobileNav.classList.add('hidden');
+    if (mobileNav) {
+        mobileNav.classList.add('hidden');
+    }
 }
 
 /**
@@ -530,6 +574,9 @@ function updateThemeIcon(themeName) {
  * Initialize UI
  */
 export async function initializeUI() {
+    // Initialize DOM elements first
+    initializeDOMElements();
+    
     theme.initializeTheme();
     updateThemeIcon(theme.getCurrentTheme());
     updateTranslations();
