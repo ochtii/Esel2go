@@ -38,8 +38,6 @@ export function renderFooter(page = 'shop') {
         `${i > 0 ? '<span class="text-gray-400">|</span>' : ''}<a href="${link.href}" class="text-${cfg.color}-500 hover:text-${cfg.color}-600 underline">${link.text}</a>`
     ).join(' ');
 
-    const showThemeSwitcher = page !== 'disclaimer'; // Disclaimer zeigt Theme-Switcher woanders
-
     return `
         <footer class="${page === 'disclaimer' ? 'bg-gray-800 text-white' : 'theme-bg-secondary theme-border border-t'} mt-12 py-8">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -49,47 +47,22 @@ export function renderFooter(page = 'shop') {
                         ${cfg.links.length > 0 ? `<div class="flex gap-3 text-xs mt-1">${linksHTML}</div>` : ''}
                     </div>
                     
-                    ${showThemeSwitcher ? `
-                    <div class="flex items-center gap-4">
-                        <!-- Theme Switcher -->
-                        <div id="themeSwitcher" class="flex gap-2">
-                            <button data-theme="light" class="theme-btn w-8 h-8 rounded-full bg-white border-2 border-gray-300 hover:border-${cfg.color}-500 transition" title="Light Theme"></button>
-                            <button data-theme="dark" class="theme-btn w-8 h-8 rounded-full bg-gray-900 border-2 border-gray-700 hover:border-${cfg.color}-500 transition" title="Dark Theme"></button>
-                            <button data-theme="esel-oida" class="theme-btn w-8 h-8 rounded-full bg-gradient-to-r from-orange-600 to-amber-600 border-2 border-orange-700 hover:border-${cfg.color}-500 transition" title="Esel Oida Theme"></button>
-                        </div>
-                        
-                        <!-- Last Update & Details -->
-                        <div class="${page === 'disclaimer' ? 'text-gray-400' : 'theme-text-light'} text-xs text-right">
-                            <p class="flex items-center gap-2 justify-end">
-                                Letzte Änderung: <span id="updateTimestamp">Loading...</span>
-                                <button id="commitDetailsBtn" class="text-${cfg.color}-500 hover:text-${cfg.color}-600 transition" title="Commit-Details anzeigen">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </button>
-                            </p>
-                            <button id="cachebusterStatusBtn" class="text-${cfg.color}-500 hover:text-${cfg.color}-600 underline mt-1 flex items-center gap-1 ml-auto">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="${page === 'disclaimer' ? 'text-gray-400' : 'theme-text-light'} text-xs text-right">
+                        <p class="flex items-center gap-2 justify-end">
+                            Letzte Änderung: <span id="updateTimestamp">Loading...</span>
+                            <button id="commitDetailsBtn" class="text-${cfg.color}-500 hover:text-${cfg.color}-600 transition" title="Commit-Details anzeigen">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                Cache-Buster Status
                             </button>
-                        </div>
+                        </p>
+                        <button id="cachebusterStatusBtn" class="text-${cfg.color}-500 hover:text-${cfg.color}-600 underline mt-1 flex items-center gap-1 ml-auto">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Cache-Buster Status
+                        </button>
                     </div>
-                    ` : `
-                    <div class="flex items-center gap-4">
-                        <div class="text-gray-400 text-xs text-right">
-                            <p class="flex items-center gap-2 justify-end">
-                                Letzte Änderung: <span id="updateTimestamp">Loading...</span>
-                                <button id="commitDetailsBtn" class="text-orange-500 hover:text-orange-600 transition" title="Commit-Details anzeigen">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </button>
-                            </p>
-                        </div>
-                    </div>
-                    `}
                 </div>
             </div>
         </footer>

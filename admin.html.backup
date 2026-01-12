@@ -14,8 +14,20 @@
     <!-- Tailwind Config -->
     <script src="src/tailwind-config.js"></script>
     
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Cache Buster Init (must load before app) -->
+    <script src="src/cachebuster-init.js"></script>
+    
+    <!-- Custom CSS - loaded dynamically with cache busting -->
+    <script>
+        // Load CSS with cache busting
+        (function() {
+            const version = window._cachebusterVersion || Date.now();
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = `assets/css/style.css?v=${version}`;
+            document.head.appendChild(link);
+        })();
+    </script>
     
     <style>
         .card-gradient {
@@ -83,28 +95,29 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100 text-gray-900 font-sans">
+<body class="bg-gray-50 text-gray-900 font-sans theme-light">
     
     <!-- Header -->
     <header class="card-gradient text-white shadow-2xl sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
-        <div class="container mx-auto px-6 py-6">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="bg-white bg-opacity-20 p-3 rounded-xl backdrop-blur">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="container mx-auto px-4 sm:px-6 py-3 sm:py-6">
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2 sm:gap-4">
+                    <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded-lg sm:rounded-xl backdrop-blur">
+                        <svg class="w-5 h-5 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-3xl font-bold">Product Manager</h1>
-                        <p class="text-sm opacity-90">esel2go Admin Dashboard</p>
+                        <h1 class="text-xl sm:text-3xl font-bold">Product Manager</h1>
+                        <p class="text-xs sm:text-sm opacity-90 hidden sm:block">esel2go Admin Dashboard</p>
                     </div>
                 </div>
-                <a href="index.html" class="bg-white text-purple-600 px-6 py-3 rounded-xl font-semibold hover:bg-opacity-90 transition shadow-lg flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="index.html" class="bg-white text-purple-600 px-3 py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl font-semibold hover:bg-opacity-90 transition shadow-lg flex items-center gap-1 sm:gap-2 text-sm sm:text-base">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                     </svg>
-                    Zurück zum Shop
+                    <span class="hidden sm:inline">Zurück zum Shop</span>
+                    <span class="sm:hidden">Shop</span>
                 </a>
             </div>
         </div>
@@ -124,7 +137,7 @@
                         Produktkatalog
                     </div>
                 </button>
-                <button onclick="switchTab('manager')" id="managerTab" class="tab-btn px-6 py-3 font-semibold transition-all border-b-4 border-purple-500 text-purple-600">
+                <button onclick="switchTab('manager')" id="managerTab" class="tab-btn px-6 py-3 font-semibold transition-all border-b-4 border-purple-500 text-purple-600 active">
                     <div class="flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -135,8 +148,38 @@
             </div>
         </div>
         
-        <!-- Stats Cards (always visible) -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" id="statsSection">
+        <!-- Stats Cards - Kompakt auf Mobile, Grid auf Desktop -->
+        <div class="mb-8">
+            <!-- Mobile: Kompakte einzelne Card -->
+            <div class="md:hidden bg-white rounded-xl shadow-lg p-4 border border-gray-100">
+                <h3 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Statistik
+                </h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="text-center p-2 bg-blue-50 rounded-lg">
+                        <div class="text-2xl font-bold text-blue-600" id="totalProducts-mobile">0</div>
+                        <div class="text-xs text-gray-600">Produkte</div>
+                    </div>
+                    <div class="text-center p-2 bg-green-50 rounded-lg">
+                        <div class="text-2xl font-bold text-green-600" id="totalCategories-mobile">0</div>
+                        <div class="text-xs text-gray-600">Kategorien</div>
+                    </div>
+                    <div class="text-center p-2 bg-purple-50 rounded-lg">
+                        <div class="text-lg font-bold text-purple-600" id="avgPrice-mobile">€0.00</div>
+                        <div class="text-xs text-gray-600">Ø Preis</div>
+                    </div>
+                    <div class="text-center p-2 bg-orange-50 rounded-lg">
+                        <div class="text-lg font-bold text-orange-600" id="totalValue-mobile">€0.00</div>
+                        <div class="text-xs text-gray-600">Gesamtwert</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Desktop: Volle Grid-Ansicht -->
+            <div class="hidden md:grid grid-cols-1 md:grid-cols-4 gap-6">
             <div class="stat-card bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
                 <div class="flex items-center justify-between mb-3">
                     <div class="text-gray-500 text-sm font-semibold uppercase tracking-wide">Produkte</div>
@@ -188,6 +231,7 @@
                 <div class="text-4xl font-bold text-gray-800" id="totalValue">€0.00</div>
                 <div class="text-xs text-gray-400 mt-2">Katalogwert gesamt</div>
             </div>
+        </div>
         </div>
 
         <!-- Catalog View (Read-Only) -->
@@ -337,9 +381,9 @@
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                         <div>
                             <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                                <span class="text-3xl">📦</span> Produktkatalog
+                                <span class="text-3xl">�</span> Produktverwaltung
                             </h2>
-                            <p class="text-sm text-gray-400 mt-1">Verwalte deine Produkte</p>
+                            <p class="text-sm text-gray-500 mt-1">Bearbeite und lösche Produkte</p>
                         </div>
                         <div class="flex gap-3 flex-wrap">
                             <div class="relative flex-1 min-w-[200px]">
@@ -354,7 +398,7 @@
                         </div>
                     </div>
                     
-                    <div id="productsList" class="space-y-4 max-h-[1000px] overflow-y-auto pr-2 custom-scrollbar
+                    <div id="productsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
                             </select>
                             <input type="text" id="searchProducts" class="px-3 py-1 border rounded-lg text-sm" placeholder="🔍 Suchen...">
                         </div>
@@ -389,12 +433,90 @@
         </div>
     </main>
 
+    <!-- Footer Placeholder -->
+    <div id="footerContainer"></div>
+
+    <!-- Cache-Buster Status Modal -->
+    <div id="cachebusterModal" class="fixed inset-0 bg-black bg-opacity-50 z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 flex items-center justify-between">
+                <h3 class="text-2xl font-bold flex items-center gap-3">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    Cache-Buster Status
+                </h3>
+                <button id="closeCachebusterModal" class="text-white hover:bg-white/20 p-2 rounded-lg transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+                <div id="cachebusterStatusContent" class="space-y-6">
+                    <div class="text-center text-gray-500 py-8">
+                        <svg class="w-12 h-12 mx-auto mb-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        <p>Lade Cache-Buster Informationen...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg hidden transition-opacity">
         <span id="toastMessage"></span>
     </div>
 
     <!-- Admin Script -->
-    <script type="module" src="src/admin.js"></script>
+    <script type="module">
+        const version = window._cachebusterVersion || Date.now();
+        
+        // Load and inject footer
+        import(`./src/footer-component.js?v=${version}`).then(module => {
+            const footerHTML = module.renderFooter('admin');
+            document.getElementById('footerContainer').innerHTML = footerHTML;
+            module.initializeFooter();
+            
+            // Setup theme switcher after footer is rendered
+            return import(`./src/theme.js?v=${version}`);
+        }).then(themeModule => {
+            console.log('Theme module loaded');
+            themeModule.initializeTheme();
+            
+            // Setup theme switcher buttons
+            const themeBtns = document.querySelectorAll('.theme-btn');
+            themeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const theme = btn.dataset.theme;
+                    themeModule.setTheme(theme);
+                    
+                    // Update active state
+                    themeBtns.forEach(b => b.classList.remove('ring-2', 'ring-offset-2', 'ring-purple-500'));
+                    btn.classList.add('ring-2', 'ring-offset-2', 'ring-purple-500');
+                });
+                
+                // Set active state for current theme
+                if (btn.dataset.theme === themeModule.getCurrentTheme()) {
+                    btn.classList.add('ring-2', 'ring-offset-2', 'ring-purple-500');
+                }
+            });
+        }).catch(err => {
+            console.error('Failed to load footer or theme:', err);
+        });
+        
+        // Load footer module for cache-buster status
+        import(`./src/footer.js?v=${version}`).catch(err => {
+            console.error('Failed to load footer.js:', err);
+        });
+        
+        // Load admin.js
+        import(`./src/admin.js?v=${version}`).catch(err => {
+            console.error('Failed to load admin.js:', err);
+            import('./src/admin.js');
+        });
+    </script>
 </body>
 </html>

@@ -300,13 +300,24 @@ function renderProductCard(product) {
     const categoryColor = getCategoryColor(product.categoryId);
     const isPremium = product.price >= 100;
     
+    // Escape HTML in text fields
+    const escapeHtml = (text) => {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    };
+    
+    const safeName = escapeHtml(product.name);
+    const safeDescription = escapeHtml(product.description);
+    const safeOrigin = escapeHtml(product.origin);
+    
     const premiumBadge = isPremium ? '<span class="absolute top-2 right-2 text-xs px-2 py-1 bg-yellow-400 text-yellow-900 rounded-full font-bold shadow-lg">💎 Premium</span>' : '';
     
     return `
         <div class="product-card group bg-white rounded-xl shadow-md hover:shadow-xl border-2 border-gray-100 hover:border-purple-300 transition-all duration-300 overflow-hidden">
             <!-- Image Section -->
             <div class="relative h-32 bg-gradient-to-br from-purple-50 to-pink-50 overflow-hidden">
-                <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <img src="${product.image}" alt="${safeName}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                 ${premiumBadge}
                 <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3">
                     <div class="flex items-center justify-between">
@@ -318,8 +329,8 @@ function renderProductCard(product) {
             
             <!-- Content Section -->
             <div class="p-4">
-                <h3 class="font-bold text-base text-gray-800 mb-2 line-clamp-1 group-hover:text-purple-600 transition-colors">${product.name}</h3>
-                <p class="text-xs text-gray-600 mb-3 line-clamp-2 leading-relaxed">${product.description}</p>
+                <h3 class="font-bold text-base text-gray-800 mb-2 line-clamp-1 group-hover:text-purple-600 transition-colors">${safeName}</h3>
+                <p class="text-xs text-gray-600 mb-3 line-clamp-2 leading-relaxed">${safeDescription}</p>
                 
                 <!-- Info Grid -->
                 <div class="grid grid-cols-3 gap-2 mb-3 text-xs">
@@ -332,7 +343,7 @@ function renderProductCard(product) {
                         <div class="text-gray-500 text-[10px]">Alter</div>
                     </div>
                     <div class="bg-green-50 rounded-lg p-2 text-center">
-                        <div class="font-bold text-green-600 text-xs truncate" title="${product.origin}">${product.origin}</div>
+                        <div class="font-bold text-green-600 text-xs truncate" title="${safeOrigin}">${safeOrigin}</div>
                         <div class="text-gray-500 text-[10px]">Herkunft</div>
                     </div>
                 </div>
