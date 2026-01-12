@@ -41,13 +41,15 @@ Eine moderne, vollständig funktionsfähige Single-Page-Application (SPA) für e
 ```
 esel2go/
 ├── index.html                 # HTML5 Structure mit Tailwind CDN
+├── server.py                  # Development Server (No-Cache)
 ├── README.md                  # Diese Datei
+├── build-info.json           # Build-Timestamp für Footer
 ├── assets/
 │   └── css/
 │       └── style.css         # Custom CSS & Theme-Definitionen
 ├── data/
 │   ├── categories.json       # Kategorien (3x)
-│   ├── products.json         # Produkte (6x)
+│   ├── products.json         # Produkte (36x mit Unsplash-Bildern)
 │   └── translations.json     # i18n Strings (DE/EN)
 └── src/
     ├── main.js              # App-Initialization
@@ -104,7 +106,10 @@ Background: Dark Slate (#0f172a)
 git clone https://github.com/ochtii/Esel2go.git
 cd Esel2go
 
-# Mit Python 3
+# EMPFOHLEN: Mit NO-CACHE Development Server (sofortige Updates!)
+python3 server.py
+
+# Alternativ: Mit Standard Python Server
 python -m http.server 8000
 
 # Mit Node.js (http-server)
@@ -114,7 +119,9 @@ npx http-server
 # -> Rechtsklick auf index.html → "Open with Live Server"
 ```
 
-Dann öffne: **http://localhost:8000**
+Dann öffne: **http://localhost:8080** (mit server.py) oder **http://localhost:8000**
+
+**⚡ Tipp**: Nutze `server.py` für sofortige Änderungen ohne Browser-Cache!
 
 ---
 
