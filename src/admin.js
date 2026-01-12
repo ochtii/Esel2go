@@ -278,7 +278,7 @@ function renderProducts() {
     
     // Render
     productsList.innerHTML = filtered.length === 0 
-        ? '<div class="text-center text-gray-400 py-8">Keine Produkte gefunden</div>'
+        ? '<div class="col-span-full text-center text-gray-400 py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200"><svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg><p class="text-lg font-semibold">Keine Produkte gefunden</p><p class="text-sm">Versuche einen anderen Suchbegriff oder Filter</p></div>'
         : filtered.map(product => renderProductCard(product)).join('');
     
     // Add event listeners to buttons
@@ -300,43 +300,58 @@ function renderProductCard(product) {
     const categoryColor = getCategoryColor(product.categoryId);
     const isPremium = product.price >= 100;
     
-    const premiumBadge = isPremium ? '<span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full font-semibold">💎 Premium</span>' : '';
+    const premiumBadge = isPremium ? '<span class="absolute top-2 right-2 text-xs px-2 py-1 bg-yellow-400 text-yellow-900 rounded-full font-bold shadow-lg">💎 Premium</span>' : '';
     
     return `
-        <div class="product-card flex flex-col md:flex-row items-start md:items-center gap-4 p-5 border-2 border-gray-100 rounded-2xl hover:border-purple-300 hover:shadow-lg bg-gradient-to-r from-white to-gray-50 transition-all duration-300">
-            <div class="relative group flex-shrink-0">
-                <img src="${product.image}" alt="${product.name}" class="w-24 h-24 object-cover rounded-xl shadow-md group-hover:shadow-xl transition-all">
-                <div class="absolute inset-0 bg-purple-600 bg-opacity-0 group-hover:bg-opacity-10 rounded-xl transition-all"></div>
-            </div>
-            
-            <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 mb-2 flex-wrap">
-                    <span class="text-xs font-mono text-gray-400 bg-gray-100 px-2 py-1 rounded">${product.id}</span>
-                    <span class="text-xs px-3 py-1 ${categoryColor} rounded-full font-semibold">${categoryName}</span>
-                    ${premiumBadge}
-                </div>
-                <h3 class="font-bold text-lg text-gray-800 mb-1">${product.name}</h3>
-                <p class="text-sm text-gray-600 mb-3 line-clamp-2">${product.description}</p>
-                <div class="flex flex-wrap gap-4 text-sm">
-                    <span class="text-purple-600 font-bold text-lg">€${product.price.toFixed(2)}</span>
-                    <span class="text-gray-500 flex items-center gap-1">⏰ ${product.age} Jahre</span>
-                    <span class="text-gray-500 flex items-center gap-1">📍 ${product.origin}</span>
+        <div class="product-card group bg-white rounded-xl shadow-md hover:shadow-xl border-2 border-gray-100 hover:border-purple-300 transition-all duration-300 overflow-hidden">
+            <!-- Image Section -->
+            <div class="relative h-32 bg-gradient-to-br from-purple-50 to-pink-50 overflow-hidden">
+                <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                ${premiumBadge}
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono text-white/90 bg-black/30 backdrop-blur-sm px-2 py-1 rounded">${product.id}</span>
+                        <span class="text-xs px-2 py-1 ${categoryColor} rounded-full font-semibold shadow-sm">${categoryName}</span>
+                    </div>
                 </div>
             </div>
             
-            <div class="flex md:flex-col gap-2 w-full md:w-auto">
-                <button class="edit-btn flex-1 md:flex-none px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all font-semibold text-sm flex items-center justify-center gap-2" data-id="${product.id}">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                    </svg>
-                    Bearbeiten
-                </button>
-                <button class="delete-btn flex-1 md:flex-none px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all font-semibold text-sm flex items-center justify-center gap-2" data-id="${product.id}">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
-                    Löschen
-                </button>
+            <!-- Content Section -->
+            <div class="p-4">
+                <h3 class="font-bold text-base text-gray-800 mb-2 line-clamp-1 group-hover:text-purple-600 transition-colors">${product.name}</h3>
+                <p class="text-xs text-gray-600 mb-3 line-clamp-2 leading-relaxed">${product.description}</p>
+                
+                <!-- Info Grid -->
+                <div class="grid grid-cols-3 gap-2 mb-3 text-xs">
+                    <div class="bg-purple-50 rounded-lg p-2 text-center">
+                        <div class="font-bold text-purple-600 text-sm">€${product.price.toFixed(2)}</div>
+                        <div class="text-gray-500 text-[10px]">Preis</div>
+                    </div>
+                    <div class="bg-blue-50 rounded-lg p-2 text-center">
+                        <div class="font-bold text-blue-600 text-sm">${product.age}J</div>
+                        <div class="text-gray-500 text-[10px]">Alter</div>
+                    </div>
+                    <div class="bg-green-50 rounded-lg p-2 text-center">
+                        <div class="font-bold text-green-600 text-xs truncate" title="${product.origin}">${product.origin}</div>
+                        <div class="text-gray-500 text-[10px]">Herkunft</div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex gap-2">
+                    <button class="edit-btn flex-1 px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all font-semibold text-xs flex items-center justify-center gap-1" data-id="${product.id}">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        Bearbeiten
+                    </button>
+                    <button class="delete-btn px-3 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all font-semibold text-xs flex items-center justify-center gap-1" data-id="${product.id}">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Löschen
+                    </button>
+                </div>
             </div>
         </div>
     `;
