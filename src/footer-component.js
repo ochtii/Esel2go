@@ -353,9 +353,9 @@ async function loadCommitDetails() {
                 </div>
                 
                 <div class="space-y-3">
-                    ${files.map(file => {
-                        const insertions = parseInt(file.insertions || file.additions) || 0;
-                        const deletions = parseInt(file.deletions) || 0;
+                    ${normalizedFiles.map(file => {
+                        const insertions = file.insertions;
+                        const deletions = file.deletions;
                         const total = insertions + deletions;
                         const insertPct = total > 0 ? (insertions / total) * 100 : 0;
                         const deletePct = total > 0 ? (deletions / total) * 100 : 0;
@@ -387,7 +387,7 @@ async function loadCommitDetails() {
                                 <div class="flex items-start justify-between gap-3 mb-2">
                                     <div class="flex items-center gap-2 flex-1">
                                         <span class="text-lg">${statusIcon}</span>
-                                        <span class="font-mono text-sm font-semibold text-gray-800 break-all">${file.file || file.filename}</span>
+                                        <span class="font-mono text-sm font-semibold text-gray-800 break-all">${file.file}</span>
                                     </div>
                                     ${statusLabel ? `<span class="text-xs bg-white px-2 py-1 rounded font-semibold text-gray-600">${statusLabel}</span>` : ''}
                                 </div>
