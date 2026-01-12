@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T00:50:22Z", "message": "fix: add fallback for footer timestamp and improve error handling", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T00:51:37Z", "message": "remove fallback, improve logging for build-info.json loading", "author": "Iris Oberegger"}

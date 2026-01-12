@@ -72,8 +72,42 @@
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 theme-bg">
+        <!-- Landing Page -->
+        <section id="landingPage" class="mb-12">
+            <!-- Welcome Header -->
+            <div class="mb-12 text-center">
+                <h1 id="welcomeMessage" class="text-4xl md:text-5xl font-bold theme-primary mb-4">
+                    Willkommen zurück! 🫏
+                </h1>
+                <p class="text-lg theme-text-light">Entdecke unsere Kategorien und Produkte</p>
+            </div>
+
+            <!-- Categories Section -->
+            <div class="mb-12">
+                <h2 class="text-2xl font-bold theme-text mb-6">Kategorien</h2>
+                <div id="landingCategories" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Categories will be rendered here -->
+                </div>
+            </div>
+
+            <!-- New Products Section -->
+            <div class="mb-12">
+                <h2 class="text-2xl font-bold theme-text mb-6">Neue Produkte</h2>
+                <div id="newProductsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <!-- New products thumbnails will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Start Shopping Button -->
+            <div class="text-center">
+                <button id="startShoppingBtn" class="theme-primary-dark-bg hover:opacity-90 text-white px-8 py-3 rounded-lg font-semibold text-lg transition">
+                    Zum Einkaufen →
+                </button>
+            </div>
+        </section>
+
         <!-- Products Grid -->
-        <section>
+        <section id="productsSection" class="hidden">
             <h2 class="text-lg font-semibold theme-text mb-6">Unsere Produkte</h2>
             <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Products will be rendered here -->

@@ -8,6 +8,7 @@ import * as cart from './cart.js';
 import * as i18n from './i18n.js';
 import * as theme from './theme.js';
 import * as cachebuster from './cachebuster.js';
+import * as welcome from './welcome.js';
 // DOM Elements
 const categoryFilter = document.getElementById('categoryFilter');
 const productsGrid = document.getElementById('productsGrid');
@@ -35,6 +36,114 @@ let currentFilter = 'all';
  */
 function closeMenus() {
     mobileNav.classList.add('hidden');
+}
+
+/**
+ * Render landing page
+ */
+async function renderLandingPage() {
+    const landingPage = document.getElementById('landingPage');
+    const productsSection = document.getElementById('productsSection');
+    const startShoppingBtn = document.getElementById('startShoppingBtn');
+    
+    // Show landing page
+    landingPage.classList.remove('hidden');
+    productsSection.classList.add('hidden');
+    
+    // Set welcome message
+    const welcomeMsg = document.getElementById('welcomeMessage');
+    if (welcomeMsg) {
+        welcomeMsg.textContent = welcome.getRandomWelcome();
+    }
+    
+    // Render categories
+    await renderLandingCategories();
+    
+    // Render new products
+    await renderNewProducts();
+    
+    // Start shopping button
+    if (startShoppingBtn) {
+        startShoppingBtn.addEventListener('click', () => {
+            hideLandingPage();
+        });
+    }
+}
+
+/**
+ * Render categories on landing page
+ */
+async function renderLandingCategories() {
+    const categoriesContainer = document.getElementById('landingCategories');
+    if (!categoriesContainer) return;
+    
+    const categories = await api.fetchCategories();
+    categoriesContainer.innerHTML = '';
+    
+    categories.forEach(category => {
+        const categoryCard = document.createElement('button');
+        categoryCard.className = 'theme-bg theme-border border rounded-lg p-6 hover:shadow-lg transition text-left';
+        categoryCard.innerHTML = `
+            <h3 class="text-lg font-semibold theme-text mb-2">${category.name}</h3>
+            <p class="theme-text-light text-sm">${category.description}</p>
+        `;
+        
+        categoryCard.addEventListener('click', () => {
+            currentFilter = category.id;
+            hideLandingPage();
+            updateNavigation();
+            renderProducts();
+        });
+        
+        categoriesContainer.appendChild(categoryCard);
+    });
+}
+
+/**
+ * Render new products (last 4)
+ */
+async function renderNewProducts() {
+    const newProductsContainer = document.getElementById('newProductsGrid');
+    if (!newProductsContainer) return;
+    
+    const products = await api.fetchProducts();
+    const newProducts = products.slice(-4); // Last 4 products
+    
+    newProductsContainer.innerHTML = '';
+    
+    newProducts.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.className = 'theme-bg theme-border rounded-lg overflow-hidden hover:shadow-lg transition cursor-pointer';
+        productCard.innerHTML = `
+            <div class="aspect-square overflow-hidden theme-bg-secondary">
+                <img src="${product.image}" alt="${product.name}" 
+                    class="w-full h-full object-cover hover:scale-105 transition">
+            </div>
+            <div class="p-2 text-center">
+                <p class="text-xs theme-text truncate font-semibold">${product.name}</p>
+                <p class="text-sm theme-accent font-bold">€${product.price.toFixed(2)}</p>
+            </div>
+        `;
+        
+        productCard.addEventListener('click', () => {
+            cart.addToCart(product, 1);
+            updateCartUI();
+            showToast(`${product.name} hinzugefügt!`);
+        });
+        
+        newProductsContainer.appendChild(productCard);
+    });
+}
+
+/**
+ * Hide landing page and show products
+ */
+function hideLandingPage() {
+    const landingPage = document.getElementById('landingPage');
+    const productsSection = document.getElementById('productsSection');
+    
+    landingPage.classList.add('hidden');
+    productsSection.classList.remove('hidden');
 }
 
 /**
@@ -440,6 +549,7 @@ export async function initializeUI() {
     updateTranslations();
     await renderNavigation();
     await renderProducts();
+    await renderLandingPage();
     setupEventListeners();
     updateCartUI();
 }
