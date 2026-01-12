@@ -107,10 +107,6 @@ export function renderFooter(page = 'shop') {
                 </div>
             </div>
         </div>
-
-        <script type="module">
-            import('../src/debug-console.js');
-        </script>
     `;
 }
 

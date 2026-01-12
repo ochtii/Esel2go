@@ -425,6 +425,9 @@
             document.getElementById('footerContainer').innerHTML = footerHTML;
             module.initializeFooter();
             
+            // Load debug console after footer is ready
+            import(`./src/debug-console.js?v=${version}`);
+            
             // Setup theme switcher after footer is rendered
             return import(`./src/theme.js?v=${version}`);
         }).then(themeModule => {

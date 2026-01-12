@@ -237,6 +237,9 @@
             const footerHTML = module.renderFooter('shop');
             document.getElementById('footerContainer').innerHTML = footerHTML;
             module.initializeFooter();
+            
+            // Load debug console after footer is ready
+            return import(`./src/debug-console.js?v=${version}`);
         });
         
         // Load main application

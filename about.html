@@ -220,6 +220,9 @@
             document.getElementById('footerContainer').innerHTML = footerHTML;
             module.initializeFooter();
             
+            // Load debug console after footer is ready
+            import(`./src/debug-console.js?v=${version}`);
+            
             // Setup theme
             return import(`./src/theme.js?v=${version}`);
         }).then(themeModule => {
@@ -232,10 +235,6 @@
         import(`./src/about.js?v=${version}`).catch(err => {
             console.error('Failed to load about.js:', err);
         });
-    </script>
-
-    <script type="module">
-        import './src/debug-console.js';
     </script>
 </body>
 </html>

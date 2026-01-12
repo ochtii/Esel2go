@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T21:52:20Z", "message": "Feature: Debug-Konsole mit Kopieren-Button und Optionen-Filter für Meldungstypen", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T21:55:43Z", "message": "Fix: Debug-Konsole Toggle-Button bleibt nach Reload sichtbar (Retry-Mechanismus)", "author": "Iris Oberegger"}
