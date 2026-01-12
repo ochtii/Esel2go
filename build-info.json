@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T01:29:06Z", "message": "feat: make startpage more compact - smaller categories cards, remove all products section, add 'show all' link", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T16:48:53Z", "message": "Fix: Header buttons functionality - Initialize DOM elements after DOM loaded and add missing productsGrid section", "author": "Iris Oberegger"}

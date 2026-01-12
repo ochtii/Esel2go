@@ -95,8 +95,8 @@ async function renderStartpage() {
     // Render categories on startpage
     await renderStartpageCategories();
     
-    // Render new products on startpage
-    await renderStartpageNewProducts();
+    // Render products preview on startpage
+    await renderStartpageProducts();
 }
 
 /**
@@ -119,6 +119,7 @@ async function renderStartpageCategories() {
         
         categoryCard.addEventListener('click', () => {
             currentFilter = category.id;
+            showProductsPage();
             updateNavigation();
             renderProducts();
         });
@@ -128,18 +129,18 @@ async function renderStartpageCategories() {
 }
 
 /**
- * Render new products on startpage (last 4)
+ * Render products preview on startpage (first 4)
  */
-async function renderStartpageNewProducts() {
-    const newProductsContainer = document.getElementById('startpageNewProducts');
-    if (!newProductsContainer) return;
+async function renderStartpageProducts() {
+    const productsContainer = document.getElementById('startpageProducts');
+    if (!productsContainer) return;
     
     const products = await api.fetchProducts();
-    const newProducts = products.slice(-4); // Last 4 products
+    const previewProducts = products.slice(0, 4); // First 4 products
     
-    newProductsContainer.innerHTML = '';
+    productsContainer.innerHTML = '';
     
-    newProducts.forEach(product => {
+    previewProducts.forEach(product => {
         const productCard = document.createElement('div');
         productCard.className = 'theme-bg theme-border rounded-lg overflow-hidden hover:shadow-lg transition cursor-pointer';
         productCard.innerHTML = `
@@ -159,8 +160,36 @@ async function renderStartpageNewProducts() {
             showToast(`${product.name} hinzugefügt!`);
         });
         
-        newProductsContainer.appendChild(productCard);
+        productsContainer.appendChild(productCard);
     });
+}
+
+/**
+ * Show products page and hide startpage
+ */
+function showProductsPage() {
+    const startpageView = document.getElementById('startpageView');
+    const productsView = document.getElementById('productsView');
+    
+    if (startpageView && productsView) {
+        startpageView.classList.add('hidden');
+        productsView.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+/**
+ * Show startpage and hide products page
+ */
+function showStartpage() {
+    const startpageView = document.getElementById('startpageView');
+    const productsView = document.getElementById('productsView');
+    
+    if (startpageView && productsView) {
+        productsView.classList.add('hidden');
+        startpageView.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 }
 
 /**
@@ -204,6 +233,7 @@ export async function renderNavigation() {
         button.dataset.category = category.id;
         button.addEventListener('click', () => {
             filterByCategory(category.id);
+            showProductsPage();
             updateNavigation();
         });
         navMenu.appendChild(button);
@@ -217,6 +247,7 @@ export async function renderNavigation() {
         button.dataset.category = category.id;
         button.addEventListener('click', () => {
             filterByCategory(category.id);
+            showProductsPage();
             closeMenus();
             updateNavigation();
         });
@@ -475,6 +506,7 @@ export function setupEventListeners() {
     if (navAll) {
         navAll.addEventListener('click', () => {
             filterByCategory('all');
+            showProductsPage();
             updateNavigation();
         });
     }
@@ -482,21 +514,28 @@ export function setupEventListeners() {
     if (mobileNavAll) {
         mobileNavAll.addEventListener('click', () => {
             filterByCategory('all');
+            showProductsPage();
             closeMenus();
             updateNavigation();
         });
     }
     
-    // "Alle anzeigen" link on startpage
+    // "Alle anzeigen" button on startpage
     const showAllBtn = document.getElementById('showAllProducts');
     if (showAllBtn) {
-        showAllBtn.addEventListener('click', (e) => {
-            e.preventDefault();
+        showAllBtn.addEventListener('click', () => {
             currentFilter = 'all';
+            showProductsPage();
             updateNavigation();
             renderProducts();
-            // Scroll to products
-            document.getElementById('productsGrid')?.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+    
+    // "Zurück zur Startseite" button
+    const backToHomeBtn = document.getElementById('backToHome');
+    if (backToHomeBtn) {
+        backToHomeBtn.addEventListener('click', () => {
+            showStartpage();
         });
     }
     
@@ -582,7 +621,7 @@ export async function initializeUI() {
     updateTranslations();
     await renderNavigation();
     await renderStartpage();
-    await renderProducts();
+    // Products are loaded when user clicks "Alle anzeigen" or a category
     setupEventListeners();
     updateCartUI();
 }

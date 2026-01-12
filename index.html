@@ -72,42 +72,56 @@
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 theme-bg">
-        <!-- Welcome Section -->
-        <section id="welcomeSection" class="mb-12 text-center">
-            <h1 id="welcomeMessage" class="text-3xl md:text-4xl font-bold theme-primary mb-2">
-                Willkommen zurück! 🫏
-            </h1>
-            <p class="text-lg theme-text-light">Entdecke unsere Kategorien und Produkte</p>
-        </section>
+        <!-- Startpage View -->
+        <div id="startpageView">
+            <!-- Welcome Section -->
+            <section id="welcomeSection" class="mb-12 text-center">
+                <h1 id="welcomeMessage" class="text-3xl md:text-4xl font-bold theme-primary mb-2">
+                    Willkommen zurück! 🫏
+                </h1>
+                <p class="text-lg theme-text-light">Entdecke unsere Kategorien und Produkte</p>
+            </section>
 
-        <!-- Categories Section -->
-        <section class="mb-12">
-            <h2 class="text-2xl font-bold theme-text mb-6">Kategorien</h2>
-            <div id="startpageCategories" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                <!-- Categories will be rendered here -->
-            </div>
-        </section>
+            <!-- Categories Section -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold theme-text mb-6">Kategorien</h2>
+                <div id="startpageCategories" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <!-- Categories will be rendered here -->
+                </div>
+            </section>
 
-        <!-- New Products Section -->
-        <section class="mb-12">
-            <h2 class="text-2xl font-bold theme-text mb-6">Neue Produkte</h2>
-            <div id="startpageNewProducts" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
-                <!-- New products thumbnails will be rendered here -->
-            </div>
-            <div class="text-center">
-                <a href="#" id="showAllProducts" class="theme-primary hover:opacity-70 font-semibold text-lg transition">
-                    Alle anzeigen →
-                </a>
-            </div>
-        </section>
+            <!-- Products Preview Section -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold theme-text mb-6">Produkte</h2>
+                <div id="startpageProducts" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+                    <!-- Product thumbnails will be rendered here -->
+                </div>
+                <div class="text-center">
+                    <button id="showAllProducts" class="theme-primary hover:opacity-70 font-semibold text-lg transition">
+                        Alle anzeigen →
+                    </button>
+                </div>
+            </section>
+        </div>
 
-        <!-- Products Section -->
-        <section class="mb-12">
-            <h2 class="text-2xl font-bold theme-text mb-6">Produkte</h2>
-            <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <!-- Products will be rendered here -->
+        <!-- Products Page View -->
+        <div id="productsView" class="hidden">
+            <div class="mb-6 flex items-center gap-4">
+                <button id="backToHome" class="theme-text hover:theme-primary transition flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Zurück zur Startseite
+                </button>
             </div>
-        </section>
+            
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold theme-text mb-6">Alle Produkte</h2>
+                <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Products will be rendered here -->
+                </div>
+            </section>
+        </div>
     </main>
 
     <!-- Cart Sidebar (Modal) -->
