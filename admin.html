@@ -433,39 +433,8 @@
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="mt-12 bg-gray-100 border-t border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="text-gray-600 text-sm">
-                    <p>© 2026 esel2go - Admin Panel</p>
-                    <div class="flex gap-3 text-xs mt-1">
-                        <a href="disclaimer.html" class="text-purple-500 hover:text-purple-600 underline">⚠️ Disclaimer</a>
-                        <span class="text-gray-400">|</span>
-                        <a href="index.html" class="text-purple-500 hover:text-purple-600 underline">🛍️ Shop</a>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4">
-                    <!-- Theme Switcher -->
-                    <div id="themeSwitcher" class="flex gap-2">
-                        <button data-theme="light" class="theme-btn w-8 h-8 rounded-full bg-white border-2 border-gray-300 hover:border-purple-500 transition" title="Light Theme"></button>
-                        <button data-theme="dark" class="theme-btn w-8 h-8 rounded-full bg-gray-900 border-2 border-gray-700 hover:border-purple-500 transition" title="Dark Theme"></button>
-                        <button data-theme="esel-oida" class="theme-btn w-8 h-8 rounded-full bg-gradient-to-r from-orange-600 to-amber-600 border-2 border-orange-700 hover:border-purple-500 transition" title="Esel Oida Theme"></button>
-                    </div>
-                    <!-- Last Update & Cache-Buster Status -->
-                    <div class="text-gray-600 text-xs text-right">
-                        <p>Letzte Änderung: <span id="updateTimestamp">Loading...</span></p>
-                        <button id="cachebusterStatusBtn" class="text-purple-500 hover:text-purple-600 underline mt-1 flex items-center gap-1 ml-auto">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            Cache-Buster Status
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <!-- Footer Placeholder -->
+    <div id="footerContainer"></div>
 
     <!-- Cache-Buster Status Modal -->
     <div id="cachebusterModal" class="fixed inset-0 bg-black bg-opacity-50 z-[100] hidden flex items-center justify-center p-4">
@@ -503,13 +472,18 @@
 
     <!-- Admin Script -->
     <script type="module">
-        // Load theme.js and footer.js first for theme support and cache-buster status
         const version = window._cachebusterVersion || Date.now();
         
-        // Load and initialize theme module
-        import(`./src/theme.js?v=${version}`).then(themeModule => {
+        // Load and inject footer
+        import(`./src/footer-component.js?v=${version}`).then(module => {
+            const footerHTML = module.renderFooter('admin');
+            document.getElementById('footerContainer').innerHTML = footerHTML;
+            module.initializeFooter();
+            
+            // Setup theme switcher after footer is rendered
+            return import(`./src/theme.js?v=${version}`);
+        }).then(themeModule => {
             console.log('Theme module loaded');
-            // Initialize theme
             themeModule.initializeTheme();
             
             // Setup theme switcher buttons
@@ -530,7 +504,7 @@
                 }
             });
         }).catch(err => {
-            console.error('Failed to load theme.js:', err);
+            console.error('Failed to load footer or theme:', err);
         });
         
         // Load footer module for cache-buster status

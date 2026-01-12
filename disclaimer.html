@@ -69,32 +69,44 @@
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white mt-16 py-8">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <p class="text-gray-400 text-sm">
-                    <span id="footerYear"></span> Esel2go - Demo-Projekt
-                </p>
-                <!-- Theme Switcher -->
-                <div id="themeSwitcher" class="flex gap-2">
-                    <button data-theme="light" class="theme-btn w-8 h-8 rounded-full bg-white border-2 border-gray-300 hover:border-orange-500 transition" title="Light Theme"></button>
-                    <button data-theme="dark" class="theme-btn w-8 h-8 rounded-full bg-gray-900 border-2 border-gray-700 hover:border-orange-500 transition" title="Dark Theme"></button>
-                    <button data-theme="esel-oida" class="theme-btn w-8 h-8 rounded-full bg-gradient-to-r from-orange-600 to-amber-600 border-2 border-orange-700 hover:border-orange-500 transition" title="Esel Oida Theme"></button>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <!-- Footer Placeholder -->
+    <div id="footerContainer"></div>
 
     <script type="module">
-        // Load theme.js with cache busting
         const version = window._cachebusterVersion || Date.now();
-        import(`./src/theme.js?v=${version}`).catch(err => {
-            console.error('Failed to load theme.js:', err);
+        
+        // Load and inject footer
+        import(`./src/footer-component.js?v=${version}`).then(module => {
+            const footerHTML = module.renderFooter('disclaimer');
+            document.getElementById('footerContainer').innerHTML = footerHTML;
+            module.initializeFooter();
+            
+            // Setup theme switcher after footer is rendered
+            return import(`./src/theme.js?v=${version}`);
+        }).then(themeModule => {
+            // Setup theme switcher buttons
+            const themeBtns = document.querySelectorAll('.theme-btn');
+            themeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const theme = btn.dataset.theme;
+                    themeModule.setTheme(theme);
+                    
+                    // Update active state
+                    themeBtns.forEach(b => b.classList.remove('ring-2', 'ring-offset-2', 'ring-orange-500'));
+                    btn.classList.add('ring-2', 'ring-offset-2', 'ring-orange-500');
+                });
+                
+                // Set active state for current theme
+                if (btn.dataset.theme === themeModule.getCurrentTheme()) {
+                    btn.classList.add('ring-2', 'ring-offset-2', 'ring-orange-500');
+                }
+            });
+        }).catch(err => {
+            console.error('Failed to load footer or theme:', err);
         });
         
         // Set footer year
-        document.getElementById('footerYear').textContent = new Date().getFullYear();
+        document.getElementById('footerYear')?.textContent = new Date().getFullYear();
         
         const disclaimers = {
             de: {
