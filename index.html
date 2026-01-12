@@ -8,59 +8,11 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Custom Tailwind Config -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#f0f9ff',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                        },
-                        accent: {
-                            500: '#f97316',
-                            600: '#ea580c',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Tailwind Config -->
+    <script src="src/tailwind-config.js"></script>
     
-    <!-- Cache Buster Script - Load BEFORE CSS Link -->
-    <script>
-        // Initialize cachebuster early
-        (function() {
-            const CACHEBUSTER_ENABLED_KEY = 'cachebuster_enabled';
-            const CACHEBUSTER_VERSION_KEY = 'cachebuster_version';
-            
-            // Get or create version
-            let version = localStorage.getItem(CACHEBUSTER_VERSION_KEY);
-            if (!version) {
-                version = Date.now().toString();
-                localStorage.setItem(CACHEBUSTER_VERSION_KEY, version);
-            }
-            
-            // Check if enabled (default true)
-            let enabled = localStorage.getItem(CACHEBUSTER_ENABLED_KEY);
-            if (enabled === null) {
-                localStorage.setItem(CACHEBUSTER_ENABLED_KEY, 'true');
-                enabled = 'true';
-            }
-            
-            // Store in window for later use
-            window._cachebusterVersion = version;
-            window._cachebusterEnabled = enabled === 'true';
-            
-            console.log(`[Cachebuster Init] ${enabled === 'true' ? 'enabled' : 'disabled'} (v${version.slice(-6)})`);
-        })();
-    </script>
+    <!-- Cache Buster Init (must load before app) -->
+    <script src="src/cachebuster-init.js"></script>
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
