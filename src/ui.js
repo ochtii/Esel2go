@@ -61,15 +61,30 @@ function updateNavigation() {
 export async function renderNavigation() {
     const categories = await api.fetchCategories();
     
-    // Update "All" buttons
+    // Clear existing nav buttons (except "All" button)
+    const existingButtons = navMenu.querySelectorAll('.nav-link[data-category]:not(#navAll)');
+    existingButtons.forEach(btn => btn.remove());
+    
+    const mobileBtns = mobileNavMenu.querySelectorAll('.nav-link[data-category]:not(#mobileNavAll)');
+    mobileBtns.forEach(btn => btn.remove());
+    
+    // Update "All" buttons (only add listener once)
     const navAll = document.getElementById('navAll');
     const mobileNavAll = document.getElementById('mobileNavAll');
     
-    navAll.addEventListener('click', () => {
+    // Remove old listeners by cloning and replacing
+    const newNavAll = navAll.cloneNode(true);
+    navAll.parentNode.replaceChild(newNavAll, navAll);
+    
+    const newMobileNavAll = mobileNavAll.cloneNode(true);
+    mobileNavAll.parentNode.replaceChild(newMobileNavAll, mobileNavAll);
+    
+    // Add new listeners
+    newNavAll.addEventListener('click', () => {
         filterByCategory('all');
         updateNavigation();
     });
-    mobileNavAll.addEventListener('click', () => {
+    newMobileNavAll.addEventListener('click', () => {
         filterByCategory('all');
         closeMenus();
         updateNavigation();
@@ -431,7 +446,7 @@ function updateLanguageUI() {
     }
     
     updateTranslations();
-    renderNavigation();
+    updateNavigation();
 }
 
 /**

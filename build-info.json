@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T00:37:50Z", "message": "fix: restore missing script tag and fix cachebuster initialization", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T00:38:49Z", "message": "refactor: remove all inline JS and CSS - move to external files", "author": "Iris Oberegger"}
