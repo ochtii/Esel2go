@@ -15,10 +15,10 @@ function formatDate(isoString) {
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit',
-            second: '2-digit',
-            timeZone: 'Europe/Vienna'
+            timeZone: 'Europe/Vienna',
+            timeZoneName: 'short'
         };
-        return new Intl.DateTimeFormat('de-DE', options).format(date);
+        return new Intl.DateTimeFormat('de-AT', options).format(date);
     } catch (error) {
         console.warn('Date formatting error:', error);
         return isoString;
@@ -30,8 +30,9 @@ function formatDate(isoString) {
  */
 async function fetchBuildInfo() {
     try {
+        const version = Date.now();
         console.log('Loading build-info.json from: ./build-info.json');
-        const response = await fetch('./build-info.json');
+        const response = await fetch(`./build-info.json?v=${version}`);
         console.log('Response status:', response.status, response.statusText);
         
         if (!response.ok) {
