@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T00:41:18Z", "message": "fix: prevent duplicate navigation menu items - clear before render and fix recursive calls", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T00:43:53Z", "message": "feat: remove language selection feature (DE/EN buttons)", "author": "Iris Oberegger"}

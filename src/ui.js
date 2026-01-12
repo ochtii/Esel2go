@@ -66,27 +66,9 @@ export async function renderNavigation() {
     const mobileBtns = mobileNavMenu.querySelectorAll('.nav-link[data-category]:not(#mobileNavAll)');
     mobileBtns.forEach(btn => btn.remove());
     
-    // Update "All" buttons (only add listener once)
+    // Get the "All" buttons
     const navAll = document.getElementById('navAll');
     const mobileNavAll = document.getElementById('mobileNavAll');
-    
-    // Remove old listeners by cloning and replacing
-    const newNavAll = navAll.cloneNode(true);
-    navAll.parentNode.replaceChild(newNavAll, navAll);
-    
-    const newMobileNavAll = mobileNavAll.cloneNode(true);
-    mobileNavAll.parentNode.replaceChild(newMobileNavAll, mobileNavAll);
-    
-    // Add new listeners
-    newNavAll.addEventListener('click', () => {
-        filterByCategory('all');
-        updateNavigation();
-    });
-    newMobileNavAll.addEventListener('click', () => {
-        filterByCategory('all');
-        closeMenus();
-        updateNavigation();
-    });
     
     // Add category buttons to desktop nav
     categories.forEach(category => {
@@ -359,6 +341,25 @@ export function setupEventListeners() {
     cartToggle.addEventListener('click', toggleCart);
     cartClose.addEventListener('click', closeCart);
     cartOverlay.addEventListener('click', closeCart);
+    
+    // Navigation "All" buttons
+    const navAll = document.getElementById('navAll');
+    const mobileNavAll = document.getElementById('mobileNavAll');
+    
+    if (navAll) {
+        navAll.addEventListener('click', () => {
+            filterByCategory('all');
+            updateNavigation();
+        });
+    }
+    
+    if (mobileNavAll) {
+        mobileNavAll.addEventListener('click', () => {
+            filterByCategory('all');
+            closeMenus();
+            updateNavigation();
+        });
+    }
     
     // Theme cycling
     if (themeCycle) {
