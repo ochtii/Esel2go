@@ -19,8 +19,6 @@ const cartItemsList = document.getElementById('cartItemsList');
 const emptyCartMessage = document.getElementById('emptyCartMessage');
 const cartSummary = document.getElementById('cartSummary');
 const cartBadge = document.getElementById('cartBadge');
-const langDE = document.getElementById('langDE');
-const langEN = document.getElementById('langEN');
 const themeCycle = document.getElementById('themeCycle');
 const themeIcon = document.getElementById('themeIcon');
 const navMenu = document.getElementById('navMenu');
@@ -362,16 +360,6 @@ export function setupEventListeners() {
     cartClose.addEventListener('click', closeCart);
     cartOverlay.addEventListener('click', closeCart);
     
-    // Language buttons
-    if (langDE) langDE.addEventListener('click', () => {
-        i18n.setLanguage('de');
-        updateLanguageUI();
-    });
-    if (langEN) langEN.addEventListener('click', () => {
-        i18n.setLanguage('en');
-        updateLanguageUI();
-    });
-    
     // Theme cycling
     if (themeCycle) {
         themeCycle.addEventListener('click', () => {
@@ -430,25 +418,6 @@ export function setupEventListeners() {
     });
 }
 
-
-/**
- * Update language select dropdown and translations
- */
-function updateLanguageUI() {
-    langDE.classList.remove('theme-primary-bg');
-    langEN.classList.remove('theme-primary-bg');
-    
-    const currentLang = i18n.getCurrentLanguage();
-    if (currentLang === 'de') {
-        langDE.classList.add('theme-primary-bg');
-    } else {
-        langEN.classList.add('theme-primary-bg');
-    }
-    
-    updateTranslations();
-    updateNavigation();
-}
-
 /**
  * Update theme select dropdown and icon
  */
@@ -467,7 +436,7 @@ function updateThemeIcon(themeName) {
 export async function initializeUI() {
     theme.initializeTheme();
     updateThemeIcon(theme.getCurrentTheme());
-    updateLanguageUI();
+    updateTranslations();
     await renderNavigation();
     await renderProducts();
     setupEventListeners();
