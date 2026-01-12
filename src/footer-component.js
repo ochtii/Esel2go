@@ -103,6 +103,52 @@ export function renderFooter(page = 'shop') {
 export async function initializeFooter() {
     // Initialize Commit Details Modal
     initializeCommitDetailsModal();
+    
+    // Load and display timestamp
+    await loadTimestamp();
+}
+
+/**
+ * Load and display the last commit timestamp
+ */
+async function loadTimestamp() {
+    const timestampElement = document.getElementById('updateTimestamp');
+    
+    if (!timestampElement) {
+        console.warn('Update timestamp element not found');
+        return;
+    }
+    
+    try {
+        const version = Date.now();
+        const response = await fetch(`./build-info.json?v=${version}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.lastCommit) {
+            const date = new Date(data.lastCommit);
+            const formatted = date.toLocaleString('de-AT', {
+                timeZone: 'Europe/Vienna',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZoneName: 'short'
+            });
+            timestampElement.textContent = formatted;
+            console.log('✓ Footer timestamp displayed:', formatted);
+        } else {
+            timestampElement.textContent = '(Datum nicht verfügbar)';
+        }
+    } catch (error) {
+        console.error('Failed to load timestamp:', error);
+        timestampElement.textContent = '(Datum nicht verfügbar)';
+    }
 }
 
 /**

@@ -799,6 +799,7 @@ function updateStats() {
         : 0;
     const totalValue = products.reduce((sum, p) => sum + p.price, 0);
     
+    // Desktop stats
     const totalEl = document.getElementById('totalProducts');
     const catEl = document.getElementById('totalCategories');
     const avgEl = document.getElementById('avgPrice');
@@ -808,6 +809,17 @@ function updateStats() {
     if (catEl) catEl.textContent = totalCategories;
     if (avgEl) avgEl.textContent = `€${avgPrice.toFixed(2)}`;
     if (valueEl) valueEl.textContent = `€${totalValue.toFixed(2)}`;
+    
+    // Mobile stats
+    const totalMobile = document.getElementById('totalProducts-mobile');
+    const catMobile = document.getElementById('totalCategories-mobile');
+    const avgMobile = document.getElementById('avgPrice-mobile');
+    const valueMobile = document.getElementById('totalValue-mobile');
+    
+    if (totalMobile) totalMobile.textContent = totalProducts;
+    if (catMobile) catMobile.textContent = totalCategories;
+    if (avgMobile) avgMobile.textContent = `€${avgPrice.toFixed(2)}`;
+    if (valueMobile) valueMobile.textContent = `€${totalValue.toFixed(2)}`;
 }
 
 /**
