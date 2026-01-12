@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Über esel2go - Projekt-Statistiken</title>
+    <meta name="description" content="Technische Details und Statistiken zum esel2go Projekt">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="theme-bg theme-text min-h-screen">
+    <!-- Navigation -->
+    <nav class="theme-bg-secondary theme-border border-b sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">🫏</span>
+                    <div>
+                        <h1 class="text-xl font-bold theme-text">esel2go</h1>
+                        <p class="text-xs theme-text-light">Projekt-Statistiken</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="px-4 py-2 rounded-lg theme-bg-hover transition text-sm font-semibold">
+                        🛍️ Shop
+                    </a>
+                    <a href="admin.html" class="px-4 py-2 rounded-lg theme-bg-hover transition text-sm font-semibold">
+                        🔧 Admin
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text text-transparent">
+                Über esel2go
+            </h1>
+            <p class="text-lg theme-text-light max-w-2xl mx-auto">
+                Ein modernes E-Commerce Demo-Projekt mit Vanilla JavaScript, Tailwind CSS und fortgeschrittenen Web-Features
+            </p>
+        </div>
+
+        <!-- Product Stats -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <span class="text-3xl">📦</span>
+                Produkt-Statistiken
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                    <div class="text-center">
+                        <div class="text-5xl font-bold text-blue-600 mb-2" id="totalProducts">0</div>
+                        <div class="text-gray-600 font-semibold">Produkte im Katalog</div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                    <div class="text-center">
+                        <div class="text-5xl font-bold text-green-600 mb-2" id="totalCategories">0</div>
+                        <div class="text-gray-600 font-semibold">Kategorien</div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                    <div class="text-center">
+                        <div class="text-5xl font-bold text-purple-600 mb-2" id="avgPrice">€0</div>
+                        <div class="text-gray-600 font-semibold">Durchschnittspreis</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech Stats -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <span class="text-3xl">💻</span>
+                Code-Statistiken
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Lines of Code -->
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">Zeilen Code nach Sprache</h3>
+                    <div class="space-y-4 mb-6" id="codeLines"></div>
+                    <div class="aspect-square max-w-sm mx-auto">
+                        <canvas id="linesChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- File Types -->
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">Dateien nach Typ</h3>
+                    <div class="space-y-4 mb-6" id="fileTypes"></div>
+                    <div class="aspect-square max-w-sm mx-auto">
+                        <canvas id="filesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overall Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-xl p-6 text-white text-center">
+                    <div class="text-4xl font-bold mb-2" id="totalLines">0</div>
+                    <div class="text-sm opacity-90">Zeilen Code gesamt</div>
+                </div>
+                <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-xl p-6 text-white text-center">
+                    <div class="text-4xl font-bold mb-2" id="totalFiles">0</div>
+                    <div class="text-sm opacity-90">Dateien gesamt</div>
+                </div>
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-xl p-6 text-white text-center">
+                    <div class="text-4xl font-bold mb-2" id="projectSize">0 MB</div>
+                    <div class="text-sm opacity-90">Projektgröße</div>
+                </div>
+                <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl shadow-xl p-6 text-white text-center">
+                    <div class="text-4xl font-bold mb-2" id="avgFileSize">0 KB</div>
+                    <div class="text-sm opacity-90">Ø Dateigröße</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technologies -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <span class="text-3xl">🛠️</span>
+                Verwendete Technologien
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Frontend -->
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                    <h3 class="text-lg font-bold mb-4 text-blue-600 flex items-center gap-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                        Frontend
+                    </h3>
+                    <ul class="space-y-2 text-gray-700">
+                        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Vanilla JavaScript (ES6+)</li>
+                        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Tailwind CSS (CDN)</li>
+                        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Chart.js</li>
+                        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> CSS Custom Properties</li>
+                        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> ES6 Modules</li>
+                    </ul>
+                </div>
+
+                <!-- Features -->
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                    <h3 class="text-lg font-bold mb-4 text-purple-600 flex items-center gap-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        Features
+                    </h3>
+                    <ul class="space-y-2 text-gray-700">
+                        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Dynamisches Theming</li>
+                        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> i18n (Mehrsprachigkeit)</li>
+                        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Shopping Cart</li>
+                        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Admin Panel</li>
+                        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Cache-Busting</li>
+                    </ul>
+                </div>
+
+                <!-- Architecture -->
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                    <h3 class="text-lg font-bold mb-4 text-orange-600 flex items-center gap-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                        Architektur
+                    </h3>
+                    <ul class="space-y-2 text-gray-700">
+                        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Component-based</li>
+                        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> JSON Data Store</li>
+                        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> GitHub Integration</li>
+                        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Git Hooks</li>
+                        <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Responsive Design</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Info -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <span class="text-3xl">⚙️</span>
+                System-Informationen
+            </h2>
+            
+            <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="systemInfo">
+                    <!-- Dynamically filled -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Build Info -->
+        <div class="text-center text-gray-500 text-sm">
+            <p>Letztes Update: <span id="lastUpdate">Loading...</span></p>
+            <p class="mt-2">
+                <a href="https://github.com/ochtii/Esel2go" target="_blank" rel="noopener" class="text-orange-500 hover:text-orange-600 underline">
+                    GitHub Repository ansehen
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer Container -->
+    <div id="footerContainer"></div>
+
+    <script type="module">
+        const version = window._cachebusterVersion || Date.now();
+        
+        // Load and inject footer
+        import(`./src/footer-component.js?v=${version}`).then(module => {
+            const footerHTML = module.renderFooter('about');
+            document.getElementById('footerContainer').innerHTML = footerHTML;
+            module.initializeFooter();
+            
+            // Setup theme
+            return import(`./src/theme.js?v=${version}`);
+        }).then(themeModule => {
+            themeModule.initializeTheme();
+        }).catch(err => {
+            console.error('Failed to load footer or theme:', err);
+        });
+        
+        // Load about.js
+        import(`./src/about.js?v=${version}`).catch(err => {
+            console.error('Failed to load about.js:', err);
+        });
+    </script>
+</body>
+</html>

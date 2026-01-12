@@ -13,6 +13,7 @@ export function renderFooter(page = 'shop') {
         shop: {
             year: '© 2026 esel2go - Made with 🫏 in Vienna',
             links: [
+                { text: 'ℹ️ Über', href: 'about.html' },
                 { text: '⚠️ Disclaimer', href: 'disclaimer.html' },
                 { text: '🔧 Admin', href: 'admin.html' }
             ],
@@ -21,14 +22,26 @@ export function renderFooter(page = 'shop') {
         admin: {
             year: '© 2026 esel2go - Admin Panel',
             links: [
+                { text: 'ℹ️ Über', href: 'about.html' },
                 { text: '⚠️ Disclaimer', href: 'disclaimer.html' },
                 { text: '🛍️ Shop', href: 'index.html' }
             ],
             color: 'purple'
         },
+        about: {
+            year: '© 2026 esel2go - Projekt-Statistiken',
+            links: [
+                { text: '🛍️ Shop', href: 'index.html' },
+                { text: '⚠️ Disclaimer', href: 'disclaimer.html' },
+                { text: '🔧 Admin', href: 'admin.html' }
+            ],
+            color: 'blue'
+        },
         disclaimer: {
             year: `© ${new Date().getFullYear()} esel2go - Demo-Projekt`,
-            links: [],
+            links: [
+                { text: 'ℹ️ Über', href: 'about.html' }
+            ],
             color: 'orange'
         }
     };
