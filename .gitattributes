@@ -1,0 +1,18 @@
+# Git LFS (Large File Storage) - Not used
+# All files are small enough for regular Git
+
+# Line endings
+* text=auto
+*.js text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.md text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary

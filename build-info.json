@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T17:29:43Z", "message": "Content: Ersetze Platzhalterbilder durch Unsplash-Fotos - Alle 36 Produkte haben nun echte Bilder", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T17:34:58Z", "message": "Fix: Verbesserter Cachebuster - No-Cache HTTP-Headers, Meta-Tags, Development Server", "author": "Iris Oberegger"}

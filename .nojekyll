@@ -1,0 +1,3 @@
+# GitHub Pages: Kein Jekyll Processing
+# Diese Datei verhindert, dass GitHub Pages Jekyll verwendet
+# und ermöglicht direktes Deployment aller Dateien (inkl. _files)
