@@ -3,6 +3,8 @@
 
 let debugConsoleVisible = false;
 let debugConsolePosition = 'bottom'; // 'top' oder 'bottom'
+let debugConsoleFilter = { log: true, info: true, warn: true, error: true };
+let debugConsoleLogHistory = [];
 
 function createDebugConsole() {
     if (document.getElementById('debugConsoleContainer')) return;
@@ -22,11 +24,89 @@ function createDebugConsole() {
                     <span class="font-bold">Debug-Konsole</span>
                     <button id="debugConsoleTogglePos" class="text-xs bg-gray-700 hover:bg-gray-600 rounded px-2 py-1 ml-2">Oben/Unten</button>
                 </div>
-                <button id="debugConsoleClose" class="text-xs bg-gray-700 hover:bg-gray-600 rounded px-2 py-1">Schließen</button>
+                <div class="flex items-center gap-2">
+                    <button id="debugConsoleOptionsBtn" class="text-xs bg-gray-700 hover:bg-gray-600 rounded p-1" title="Optionen">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        <span class="sr-only">Optionen</span>
+                    </button>
+                    <button id="debugConsoleClose" class="text-xs bg-gray-700 hover:bg-gray-600 rounded px-2 py-1">Schließen</button>
+                </div>
+            </div>
+            <div id="debugConsoleOptionsMenu" class="hidden absolute right-8 top-12 bg-gray-800 border border-gray-700 rounded-lg shadow-lg p-4 z-50 text-xs space-y-2">
+                <div class="font-bold mb-2">Anzeigen:</div>
+                <label class="flex items-center gap-2"><input type="checkbox" id="debugOptLog" checked> log</label>
+                <label class="flex items-center gap-2"><input type="checkbox" id="debugOptInfo" checked> info</label>
+                <label class="flex items-center gap-2"><input type="checkbox" id="debugOptWarn" checked> warn</label>
+                <label class="flex items-center gap-2"><input type="checkbox" id="debugOptError" checked> error</label>
             </div>
             <div id="debugConsoleLog" class="overflow-y-auto px-4 py-2" style="max-height: 30vh;"></div>
         </div>
     `;
+    // Optionen-Button & Menü
+    setTimeout(() => {
+        const optionsBtn = document.getElementById('debugConsoleOptionsBtn');
+        const optionsMenu = document.getElementById('debugConsoleOptionsMenu');
+        if (optionsBtn && optionsMenu) {
+            optionsBtn.onclick = (e) => {
+                e.stopPropagation();
+                optionsMenu.classList.toggle('hidden');
+            };
+            document.addEventListener('click', (e) => {
+                if (!optionsMenu.classList.contains('hidden')) {
+                    if (!optionsMenu.contains(e.target) && e.target !== optionsBtn) {
+                        optionsMenu.classList.add('hidden');
+                    }
+                }
+            });
+        }
+    }, 0);
+    // Filter-Optionen initialisieren, sobald Menü im DOM ist
+    setTimeout(setupDebugConsoleFilter, 100);
+    function setupDebugConsoleFilter() {
+        const types = ['log', 'info', 'warn', 'error'];
+        types.forEach(type => {
+            const cb = document.getElementById('debugOpt' + type.charAt(0).toUpperCase() + type.slice(1));
+            if (cb) {
+                cb.checked = debugConsoleFilter[type];
+                cb.onchange = () => {
+                    debugConsoleFilter[type] = cb.checked;
+                    rerenderDebugConsoleLog();
+                };
+            }
+        });
+    }
+
+    function rerenderDebugConsoleLog() {
+        const log = document.getElementById('debugConsoleLog');
+        if (!log) return;
+        log.innerHTML = '';
+        debugConsoleLogHistory.forEach(entry => {
+            if (debugConsoleFilter[entry.type]) {
+                // Nur anzeigen, wenn Filter aktiv
+                const msg = entry.args.map(a => {
+                    if (typeof a === 'object') {
+                        try { return JSON.stringify(a, null, 2); } catch { return '[Objekt]'; }
+                    }
+                    return String(a);
+                }).join(' ');
+                const color = entry.type === 'error' ? 'text-red-400' : entry.type === 'warn' ? 'text-yellow-300' : 'text-blue-200';
+                const time = new Date().toLocaleTimeString();
+                const copyId = 'debugCopyBtn_' + Math.random().toString(36).substr(2, 9);
+                log.innerHTML += `<div class="${color} whitespace-pre-wrap group flex items-start gap-2"><span class="text-xs text-gray-400">[${time}]</span> <span class="font-bold">${entry.type}:</span> <span class="flex-1">${msg}</span><button id="${copyId}" class="ml-2 text-xs text-gray-400 hover:text-blue-400 opacity-60 group-hover:opacity-100 transition" title="Meldung kopieren">📋</button></div>`;
+                setTimeout(() => {
+                    const btn = document.getElementById(copyId);
+                    if (btn) {
+                        btn.onclick = () => {
+                            navigator.clipboard.writeText(msg);
+                            btn.textContent = '✅';
+                            setTimeout(() => { btn.textContent = '📋'; }, 1000);
+                        };
+                    }
+                }, 0);
+            }
+        });
+        log.scrollTop = log.scrollHeight;
+    }
     document.body.appendChild(container);
 
     // Toggle-Button im Footer (immer sichtbar)
@@ -103,6 +183,8 @@ function setDebugConsolePosition() {
 function appendToDebugConsole(type, ...args) {
     const log = document.getElementById('debugConsoleLog');
     if (!log) return;
+    debugConsoleLogHistory.push({ type, args });
+    if (!debugConsoleFilter[type]) return;
     const msg = args.map(a => {
         if (typeof a === 'object') {
             try { return JSON.stringify(a, null, 2); } catch { return '[Objekt]'; }
@@ -111,8 +193,19 @@ function appendToDebugConsole(type, ...args) {
     }).join(' ');
     const color = type === 'error' ? 'text-red-400' : type === 'warn' ? 'text-yellow-300' : 'text-blue-200';
     const time = new Date().toLocaleTimeString();
-    log.innerHTML += `<div class="${color} whitespace-pre-wrap"><span class="text-xs text-gray-400">[${time}]</span> <span class="font-bold">${type}:</span> ${msg}</div>`;
+    const copyId = 'debugCopyBtn_' + Math.random().toString(36).substr(2, 9);
+    log.innerHTML += `<div class="${color} whitespace-pre-wrap group flex items-start gap-2"><span class="text-xs text-gray-400">[${time}]</span> <span class="font-bold">${type}:</span> <span class="flex-1">${msg}</span><button id="${copyId}" class="ml-2 text-xs text-gray-400 hover:text-blue-400 opacity-60 group-hover:opacity-100 transition" title="Meldung kopieren">📋</button></div>`;
     log.scrollTop = log.scrollHeight;
+    setTimeout(() => {
+        const btn = document.getElementById(copyId);
+        if (btn) {
+            btn.onclick = () => {
+                navigator.clipboard.writeText(msg);
+                btn.textContent = '✅';
+                setTimeout(() => { btn.textContent = '📋'; }, 1000);
+            };
+        }
+    }, 0);
 }
 
 // Hook browser console
