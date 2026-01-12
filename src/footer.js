@@ -371,22 +371,25 @@ function generateResourceTable(resources) {
         
         // Extract filename from URL
         const filename = resource.url.split('/').pop().split('?')[0];
+        const folder = resource.url.includes('/') ? resource.url.split('/').slice(-2, -1)[0] : '';
+        const fullPath = folder ? `${folder}/${filename}` : filename;
         
         const statusBadge = resource.cachebuster
-            ? '<span class="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-800 border border-green-200 rounded-full text-xs font-bold"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Cache-Buster Aktiv</span>'
-            : '<span class="inline-flex items-center gap-1 px-3 py-1 bg-red-100 text-red-800 border border-red-200 rounded-full text-xs font-bold"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Kein Cache-Buster</span>';
+            ? '<span class="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 border border-green-200 rounded-lg text-xs font-bold"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Aktiv</span>'
+            : '<span class="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-800 border border-red-200 rounded-lg text-xs font-bold"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Inaktiv</span>';
         
         return `
-            <div class="flex items-start gap-4 p-4 bg-white rounded-xl border-2 ${resource.cachebuster ? 'border-green-200 hover:border-green-300' : 'border-red-200 hover:border-red-300'} transition-all hover:shadow-md">
-                <div class="flex-shrink-0 mt-1">${statusIcon}</div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2 mb-2 flex-wrap">
-                        <span class="text-xs px-3 py-1 ${typeColor} border rounded-full font-bold">${resource.type}</span>
-                        <span class="text-base font-bold text-gray-800">${filename}</span>
-                    </div>
-                    <div class="flex items-center gap-3 flex-wrap">
-                        ${statusBadge}
-                        ${resource.cachebuster ? `<span class="text-sm text-gray-600">Version: <span class="font-mono font-semibold">${resource.version}</span></span>` : ''}
+            <div class="flex flex-col gap-3 p-4 bg-white rounded-xl border-2 ${resource.cachebuster ? 'border-green-200 hover:border-green-300' : 'border-red-200 hover:border-red-300'} transition-all hover:shadow-md">
+                <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0">${statusIcon}</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-2 flex-wrap">
+                            <span class="text-xs px-2 py-1 ${typeColor} border rounded-lg font-bold whitespace-nowrap">${resource.type}</span>
+                            ${statusBadge}
+                        </div>
+                        <div class="font-mono text-sm text-gray-800 font-semibold break-all mb-1">${filename}</div>
+                        ${folder ? `<div class="text-xs text-gray-500 font-mono">📁 ${folder}/</div>` : ''}
+                        ${resource.cachebuster ? `<div class="text-xs text-gray-600 mt-2">Version: <span class="font-mono font-semibold bg-gray-100 px-2 py-1 rounded">${resource.version}</span></div>` : ''}
                     </div>
                 </div>
             </div>
