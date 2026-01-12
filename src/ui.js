@@ -270,6 +270,25 @@ export async function renderCategories() {
 async function filterByCategory(categoryId) {
     currentFilter = categoryId;
     await renderProducts();
+    await updateProductsPageTitle();
+}
+
+/**
+ * Update products page title based on current filter
+ */
+async function updateProductsPageTitle() {
+    const titleElement = document.getElementById('productsPageTitle');
+    if (!titleElement) return;
+    
+    if (currentFilter === 'all') {
+        titleElement.textContent = 'Alle Produkte';
+    } else {
+        const categories = await api.fetchCategories();
+        const category = categories.find(c => c.id === currentFilter);
+        if (category) {
+            titleElement.textContent = category.name;
+        }
+    }
 }
 
 /**
@@ -523,11 +542,12 @@ export function setupEventListeners() {
     // "Alle anzeigen" button on startpage
     const showAllBtn = document.getElementById('showAllProducts');
     if (showAllBtn) {
-        showAllBtn.addEventListener('click', () => {
+        showAllBtn.addEventListener('click', async () => {
             currentFilter = 'all';
             showProductsPage();
             updateNavigation();
-            renderProducts();
+            await renderProducts();
+            await updateProductsPageTitle();
         });
     }
     

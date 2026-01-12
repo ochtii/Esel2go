@@ -7,12 +7,9 @@
     const CACHEBUSTER_ENABLED_KEY = 'cachebuster_enabled';
     const CACHEBUSTER_VERSION_KEY = 'cachebuster_version';
     
-    // Get or create version
-    let version = localStorage.getItem(CACHEBUSTER_VERSION_KEY);
-    if (!version) {
-        version = Date.now().toString();
-        localStorage.setItem(CACHEBUSTER_VERSION_KEY, version);
-    }
+    // Always generate a new version on page load to ensure fresh assets
+    const version = Date.now().toString();
+    localStorage.setItem(CACHEBUSTER_VERSION_KEY, version);
     
     // Check if enabled (default true)
     let enabled = localStorage.getItem(CACHEBUSTER_ENABLED_KEY);
