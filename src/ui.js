@@ -67,10 +67,10 @@ async function renderStartpageCategories() {
     
     categories.forEach(category => {
         const categoryCard = document.createElement('button');
-        categoryCard.className = 'theme-bg theme-border border rounded-lg p-6 hover:shadow-lg transition text-left';
+        categoryCard.className = 'theme-bg theme-border border rounded-lg p-3 hover:shadow-lg transition text-left';
         categoryCard.innerHTML = `
-            <h3 class="text-lg font-semibold theme-text mb-2">${category.name}</h3>
-            <p class="theme-text-light text-sm">${category.description}</p>
+            <h3 class="text-base font-semibold theme-text">${category.name}</h3>
+            <p class="theme-text-light text-xs mt-1">${category.description}</p>
         `;
         
         categoryCard.addEventListener('click', () => {
@@ -440,6 +440,19 @@ export function setupEventListeners() {
             filterByCategory('all');
             closeMenus();
             updateNavigation();
+        });
+    }
+    
+    // "Alle anzeigen" link on startpage
+    const showAllBtn = document.getElementById('showAllProducts');
+    if (showAllBtn) {
+        showAllBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            currentFilter = 'all';
+            updateNavigation();
+            renderProducts();
+            // Scroll to products
+            document.getElementById('productsGrid')?.scrollIntoView({ behavior: 'smooth' });
         });
     }
     
