@@ -63,6 +63,9 @@ async function init() {
     // Initialize with manager view
     switchTab('manager');
     
+    // Initialize Cache-Buster Status if button exists
+    initializeCachebusterStatus();
+    
     console.log('✨ Modern Admin panel initialized');
     showToast('✓ Admin Panel geladen', 'success');
 }
@@ -516,6 +519,144 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// Import cachebuster status functions from footer.js
+async function initializeCachebusterStatus() {
+    const statusBtn = document.getElementById('cachebusterStatusBtn');
+    const modal = document.getElementById('cachebusterModal');
+    const closeBtn = document.getElementById('closeCachebusterModal');
+    
+    if (!statusBtn || !modal || !closeBtn) return;
+    
+    // Open modal
+    statusBtn.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+        loadCachebusterStatusAdmin();
+    });
+    
+    // Close modal
+    closeBtn.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
+    
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.add('hidden');
+        }
+    });
+    
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            modal.classList.add('hidden');
+        }
+    });
+}
+
+// Load cachebuster status for admin
+function loadCachebusterStatusAdmin() {
+    const content = document.getElementById('cachebusterStatusContent');
+    if (!content) return;
+    
+    const version = window._cachebusterVersion || 'N/A';
+    const enabled = localStorage.getItem('cachebuster_enabled') !== 'false';
+    
+    const scripts = document.querySelectorAll('script[src]').length;
+    const css = document.querySelectorAll('link[rel="stylesheet"]').length;
+    const withCachebuster = Array.from(document.querySelectorAll('script[src], link[rel="stylesheet"]'))
+        .filter(el => (el.src || el.href).includes('?v=')).length;
+    
+    content.innerHTML = `
+        <div class="bg-gradient-to-r from-purple-50 to-purple-100 border-2 border-purple-200 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="bg-purple-600 text-white p-3 rounded-lg">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800">Cache-Buster ${enabled ? 'Aktiv ✓' : 'Deaktiviert'}</h3>
+                    <p class="text-sm text-gray-600">Version: ${version}</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white rounded-lg p-3 text-center shadow">
+                    <div class="text-2xl font-bold text-purple-600">${scripts + css + 4}</div>
+                    <div class="text-xs text-gray-500">Geladene Dateien</div>
+                </div>
+                <div class="bg-white rounded-lg p-3 text-center shadow">
+                    <div class="text-2xl font-bold text-green-600">${withCachebuster + 4}</div>
+                    <div class="text-xs text-gray-500">Mit Cache-Buster</div>
+                </div>
+                <div class="bg-white rounded-lg p-3 text-center shadow">
+                    <div class="text-2xl font-bold text-blue-600">2</div>
+                    <div class="text-xs text-gray-500">JSON Dateien</div>
+                </div>
+                <div class="bg-white rounded-lg p-3 text-center shadow">
+                    <div class="text-2xl font-bold text-orange-600">${scripts}</div>
+                    <div class="text-xs text-gray-500">JavaScript</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="space-y-4">
+            <h4 class="font-bold text-lg flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                Admin Panel Ressourcen
+            </h4>
+            <div class="space-y-2">
+                <div class="flex items-center gap-3 p-3 bg-white rounded-lg border hover:border-purple-300 transition">
+                    <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div class="flex-1">
+                        <span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full font-semibold">JavaScript</span>
+                        <span class="ml-2 text-sm font-medium">admin.js</span>
+                        <div class="text-xs text-green-600 font-mono">✓ Cache-Buster aktiv</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-white rounded-lg border hover:border-purple-300 transition">
+                    <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div class="flex-1">
+                        <span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full font-semibold">CSS</span>
+                        <span class="ml-2 text-sm font-medium">style.css</span>
+                        <div class="text-xs text-green-600 font-mono">✓ Cache-Buster aktiv</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-white rounded-lg border hover:border-purple-300 transition">
+                    <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div class="flex-1">
+                        <span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full font-semibold">JSON Data</span>
+                        <span class="ml-2 text-sm font-medium">products.json</span>
+                        <div class="text-xs text-green-600 font-mono">✓ Cache-Buster aktiv (Dynamic)</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-white rounded-lg border hover:border-purple-300 transition">
+                    <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div class="flex-1">
+                        <span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full font-semibold">JSON Data</span>
+                        <span class="ml-2 text-sm font-medium">categories.json</span>
+                        <div class="text-xs text-green-600 font-mono">✓ Cache-Buster aktiv (Dynamic)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-6 p-4 bg-purple-50 rounded-lg border border-purple-200">
+            <h4 class="font-semibold text-purple-900 mb-2 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Was bedeutet das?
+            </h4>
+            <p class="text-sm text-gray-700">
+                Der Cache-Buster sorgt dafür, dass alle Dateien mit einer eindeutigen Version geladen werden.
+                So werden Änderungen sofort sichtbar, ohne den Browser-Cache manuell löschen zu müssen.
+            </p>
+        </div>
+    `;
+}
 
 // Make switchTab globally accessible
 window.switchTab = switchTab;

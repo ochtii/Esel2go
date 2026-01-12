@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T18:16:39Z", "message": "Feature: Admin-Panel mit getrennten Ansichten - Produktkatalog (read-only) + Produktmanager (CRUD)", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T18:19:37Z", "message": "Fix: Cache-Buster vollständig aktiviert - admin.html + i18n.js", "author": "Iris Oberegger"}
