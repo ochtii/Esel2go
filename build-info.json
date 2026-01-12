@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T22:01:59Z", "message": "Fix: Debug-Konsole Toggle-Button jetzt direkt im Footer-HTML integriert", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T22:05:33Z", "message": "Fix: UI-Warnungen reduziert, build-info.json Fehler als Warnung statt Error", "author": "Iris Oberegger"}

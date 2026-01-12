@@ -138,20 +138,24 @@ async function loadTimestamp() {
     }
     
     const version = Date.now();
-    const paths = ['build-info.json', './build-info.json'];
+    // Use absolute path from root
+    const baseUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+    const paths = [
+        `${baseUrl}build-info.json`,
+        '/build-info.json',
+        'build-info.json',
+        './build-info.json'
+    ];
     
     for (const path of paths) {
         try {
-            console.log(`Trying to fetch: ${path}`);
             const response = await fetch(`${path}?v=${version}`);
             
             if (!response.ok) {
-                console.warn(`Failed to fetch ${path}: ${response.status}`);
                 continue;
             }
             
             const data = await response.json();
-            console.log('Build info loaded:', data);
             
             if (data.lastCommit) {
                 const date = new Date(data.lastCommit);
@@ -165,11 +169,10 @@ async function loadTimestamp() {
                     timeZoneName: 'short'
                 });
                 timestampElement.textContent = formatted;
-                console.log('✓ Footer timestamp displayed:', formatted);
                 return;
             }
         } catch (error) {
-            console.warn(`Error fetching ${path}:`, error);
+            // Silent continue to next path
         }
     }
     
