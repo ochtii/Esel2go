@@ -32,11 +32,6 @@ async function initializeApp() {
         console.log('Initializing Footer...');
         await footer.initializeFooter();
         
-        // 4. Set language selector
-        const availableLanguages = i18n.getAvailableLanguages();
-        const languageSelect = document.getElementById('languageSelect');
-        languageSelect.value = i18n.getCurrentLanguage();
-        
         console.log('✓ esel2go app initialized successfully!');
     } catch (error) {
         console.error('Failed to initialize app:', error);

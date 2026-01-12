@@ -348,31 +348,43 @@ export function setupEventListeners() {
     cartOverlay.addEventListener('click', closeCart);
     
     // Language buttons
-    langDE.addEventListener('click', () => {
+    if (langDE) langDE.addEventListener('click', () => {
         i18n.setLanguage('de');
         updateLanguageUI();
     });
-    langEN.addEventListener('click', () => {
+    if (langEN) langEN.addEventListener('click', () => {
         i18n.setLanguage('en');
         updateLanguageUI();
     });
     
     // Theme cycling
-    themeCycle.addEventListener('click', () => {
-        const nextTheme = theme.cycleTheme();
-        updateThemeIcon(nextTheme);
-        showToast(`Theme: ${theme.getThemeNames()[nextTheme]}`);
-    });
+    if (themeCycle) {
+        themeCycle.addEventListener('click', () => {
+            const nextTheme = theme.cycleTheme();
+            updateThemeIcon(nextTheme);
+            showToast(`Theme: ${theme.getThemeNames()[nextTheme]}`);
+        });
+    }
     
     // Mobile menu toggle
-    mobileMenuToggle.addEventListener('click', () => {
-        mobileNav.classList.toggle('hidden');
-    });
+    if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', (e) => {
+            console.log('Mobile menu toggle clicked');
+            mobileNav.classList.toggle('hidden');
+            console.log('Mobile nav hidden class:', mobileNav.classList.contains('hidden'));
+        });
+    } else {
+        console.warn('Mobile menu toggle button not found');
+    }
     
-    document.getElementById('checkoutBtn').addEventListener('click', () => {
-        alert('Checkout würde hier passieren! 🎉');
-        console.log('Cart Summary:', cart.getCartSummary());
-    });
+    // Checkout button
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+            alert('Checkout würde hier passieren! 🎉');
+            console.log('Cart Summary:', cart.getCartSummary());
+        });
+    }
 }
 
 /**
