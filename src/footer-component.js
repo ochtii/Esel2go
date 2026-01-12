@@ -119,42 +119,45 @@ async function loadTimestamp() {
         return;
     }
     
-    try {
-        const version = Date.now();
-        // Try relative path first (works for admin.html)
-        let response = await fetch(`build-info.json?v=${version}`);
-        
-        // If not found, try root path (works for index.html)
-        if (!response.ok && response.status === 404) {
-            response = await fetch(`./build-info.json?v=${version}`);
+    const version = Date.now();
+    const paths = ['build-info.json', './build-info.json'];
+    
+    for (const path of paths) {
+        try {
+            console.log(`Trying to fetch: ${path}`);
+            const response = await fetch(`${path}?v=${version}`);
+            
+            if (!response.ok) {
+                console.warn(`Failed to fetch ${path}: ${response.status}`);
+                continue;
+            }
+            
+            const data = await response.json();
+            console.log('Build info loaded:', data);
+            
+            if (data.lastCommit) {
+                const date = new Date(data.lastCommit);
+                const formatted = date.toLocaleString('de-AT', {
+                    timeZone: 'Europe/Vienna',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZoneName: 'short'
+                });
+                timestampElement.textContent = formatted;
+                console.log('✓ Footer timestamp displayed:', formatted);
+                return;
+            }
+        } catch (error) {
+            console.warn(`Error fetching ${path}:`, error);
         }
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-        
-        const data = await response.json();
-        
-        if (data.lastCommit) {
-            const date = new Date(data.lastCommit);
-            const formatted = date.toLocaleString('de-AT', {
-                timeZone: 'Europe/Vienna',
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                timeZoneName: 'short'
-            });
-            timestampElement.textContent = formatted;
-            console.log('✓ Footer timestamp displayed:', formatted);
-        } else {
-            timestampElement.textContent = '(Datum nicht verfügbar)';
-        }
-    } catch (error) {
-        console.error('Failed to load timestamp:', error);
-        timestampElement.textContent = '(Datum nicht verfügbar)';
     }
+    
+    // If we get here, all attempts failed
+    console.error('All attempts to load build-info.json failed');
+    timestampElement.textContent = '(Datum nicht verfügbar)';
 }
 
 /**
