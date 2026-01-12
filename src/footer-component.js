@@ -133,7 +133,6 @@ async function loadTimestamp() {
     const timestampElement = document.getElementById('updateTimestamp');
     
     if (!timestampElement) {
-        console.warn('Update timestamp element not found');
         return;
     }
     
@@ -176,8 +175,7 @@ async function loadTimestamp() {
         }
     }
     
-    // If we get here, all attempts failed
-    console.warn('Could not load build-info.json from any path');
+    // If we get here, all attempts failed - set fallback without logging
     timestampElement.textContent = '(Datum nicht verfügbar)';
 }
 
