@@ -19,55 +19,97 @@ const cartItemsList = document.getElementById('cartItemsList');
 const emptyCartMessage = document.getElementById('emptyCartMessage');
 const cartSummary = document.getElementById('cartSummary');
 const cartBadge = document.getElementById('cartBadge');
-const languageSelect = document.getElementById('languageSelect');
-const themeSelect = document.getElementById('themeSelect');
+const langDE = document.getElementById('langDE');
+const langEN = document.getElementById('langEN');
+const themeCycle = document.getElementById('themeCycle');
+const themeIcon = document.getElementById('themeIcon');
+const navMenu = document.getElementById('navMenu');
+const mobileNav = document.getElementById('mobileNav');
+const mobileNavMenu = document.getElementById('mobileNavMenu');
+const mobileMenuToggle = document.getElementById('mobileMenuToggle');
 const toast = document.getElementById('toast');
 const toastMessage = document.getElementById('toastMessage');
 
 let currentFilter = 'all';
 
 /**
- * Render category filter buttons
+ * Close mobile menus
  */
-export async function renderCategories() {
+function closeMenus() {
+    mobileNav.classList.add('hidden');
+}
+
+/**
+ * Update navigation button states
+ */
+function updateNavigation() {
+    // Update all nav buttons
+    document.querySelectorAll('.nav-link').forEach(btn => {
+        const isActive = btn.dataset.category === currentFilter;
+        btn.classList.remove('theme-primary-bg', 'theme-text');
+        if (isActive) {
+            btn.classList.add('theme-primary-bg');
+        } else {
+            btn.classList.add('theme-text');
+        }
+    });
+}
+
+/**
+ * Render category navigation menu
+ */
+export async function renderNavigation() {
     const categories = await api.fetchCategories();
     
-    // Add "All" button
-    categoryFilter.innerHTML = `
-        <button class="category-btn px-6 py-2 rounded-full font-semibold transition
-            ${currentFilter === 'all' 
-                ? 'theme-primary-bg' 
-                : 'theme-bg theme-text theme-border border hover:opacity-80'
-            }" data-category="all">
-            ${i18n.t('filterAll', 'Alles anzeigen')}
-        </button>
-    `;
+    // Update "All" buttons
+    const navAll = document.getElementById('navAll');
+    const mobileNavAll = document.getElementById('mobileNavAll');
     
-    // Add category buttons
+    navAll.addEventListener('click', () => {
+        filterByCategory('all');
+        updateNavigation();
+    });
+    mobileNavAll.addEventListener('click', () => {
+        filterByCategory('all');
+        closeMenus();
+        updateNavigation();
+    });
+    
+    // Add category buttons to desktop nav
     categories.forEach(category => {
         const button = document.createElement('button');
-        button.className = `category-btn px-6 py-2 rounded-full font-semibold transition ${
-            currentFilter === category.id 
-                ? 'theme-primary-bg' 
-                : 'theme-bg theme-text theme-border border hover:opacity-80'
-        }`;
+        button.className = 'nav-link px-4 py-2 rounded-lg text-sm font-medium transition';
         button.textContent = category.name;
         button.dataset.category = category.id;
-        button.addEventListener('click', () => filterByCategory(category.id));
-        categoryFilter.appendChild(button);
+        button.addEventListener('click', () => {
+            filterByCategory(category.id);
+            updateNavigation();
+        });
+        navMenu.appendChild(button);
     });
     
-    // Add event listeners to all category buttons
-    document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.category-btn').forEach(b => {
-                b.classList.remove('bg-primary-600', 'text-white');
-                b.classList.add('bg-white', 'text-gray-800', 'border', 'border-gray-300');
-            });
-            e.target.classList.remove('bg-white', 'text-gray-800', 'border', 'border-gray-300');
-            e.target.classList.add('bg-primary-600', 'text-white');
+    // Add category buttons to mobile nav
+    categories.forEach(category => {
+        const button = document.createElement('button');
+        button.className = 'nav-link w-full px-4 py-2 rounded-lg text-sm font-medium transition text-left';
+        button.textContent = category.name;
+        button.dataset.category = category.id;
+        button.addEventListener('click', () => {
+            filterByCategory(category.id);
+            closeMenus();
+            updateNavigation();
         });
+        mobileNavMenu.appendChild(button);
     });
+    
+    updateNavigation();
+}
+
+/**
+ * Render category filter buttons (legacy - kept for products rendering)
+ */
+export async function renderCategories() {
+    // Navigation is now handled by renderNavigation()
 }
 
 /**
@@ -305,14 +347,26 @@ export function setupEventListeners() {
     cartClose.addEventListener('click', closeCart);
     cartOverlay.addEventListener('click', closeCart);
     
-    languageSelect.addEventListener('change', (e) => {
-        i18n.setLanguage(e.target.value);
+    // Language buttons
+    langDE.addEventListener('click', () => {
+        i18n.setLanguage('de');
+        updateLanguageUI();
+    });
+    langEN.addEventListener('click', () => {
+        i18n.setLanguage('en');
         updateLanguageUI();
     });
     
-    themeSelect.addEventListener('change', (e) => {
-        theme.setTheme(e.target.value);
-        showToast(`Theme: ${theme.getThemeNames()[e.target.value]}`);
+    // Theme cycling
+    themeCycle.addEventListener('click', () => {
+        const nextTheme = theme.cycleTheme();
+        updateThemeIcon(nextTheme);
+        showToast(`Theme: ${theme.getThemeNames()[nextTheme]}`);
+    });
+    
+    // Mobile menu toggle
+    mobileMenuToggle.addEventListener('click', () => {
+        mobileNav.classList.toggle('hidden');
     });
     
     document.getElementById('checkoutBtn').addEventListener('click', () => {
@@ -325,16 +379,30 @@ export function setupEventListeners() {
  * Update language select dropdown and translations
  */
 function updateLanguageUI() {
-    languageSelect.value = i18n.getCurrentLanguage();
+    langDE.classList.remove('theme-primary-bg');
+    langEN.classList.remove('theme-primary-bg');
+    
+    const currentLang = i18n.getCurrentLanguage();
+    if (currentLang === 'de') {
+        langDE.classList.add('theme-primary-bg');
+    } else {
+        langEN.classList.add('theme-primary-bg');
+    }
+    
     updateTranslations();
-    renderCategories();
+    renderNavigation();
 }
 
 /**
- * Update theme select dropdown
+ * Update theme select dropdown and icon
  */
-function updateThemeUI() {
-    themeSelect.value = theme.getCurrentTheme();
+function updateThemeIcon(themeName) {
+    const icons = {
+        'light': '🌞',
+        'dark': '🌙',
+        'esel-oida': '🫏'
+    };
+    themeIcon.textContent = icons[themeName] || '🌞';
 }
 
 /**
@@ -342,8 +410,9 @@ function updateThemeUI() {
  */
 export async function initializeUI() {
     theme.initializeTheme();
-    updateThemeUI();
-    await renderCategories();
+    updateThemeIcon(theme.getCurrentTheme());
+    updateLanguageUI();
+    await renderNavigation();
     await renderProducts();
     setupEventListeners();
     updateCartUI();

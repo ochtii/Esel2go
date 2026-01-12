@@ -40,46 +40,67 @@
     
     <!-- Header -->
     <header class="theme-bg theme-border sticky top-0 z-40 border-b">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Top Row -->
+            <div class="flex items-center justify-between h-16">
                 <h1 class="text-3xl font-bold theme-primary">esel2go</h1>
                 
-                <!-- Theme & Language Switchers -->
-                <div class="flex items-center gap-4">
-                    <select id="themeSelect" class="px-3 py-2 theme-border theme-bg theme-text border rounded-lg text-sm font-medium">
-                        <option value="light">☀️ Light</option>
-                        <option value="dark">🌙 Dark</option>
-                        <option value="esel-oida">🫏 Esel Oida</option>
-                    </select>
+                <!-- Right Controls -->
+                <div class="flex items-center gap-3">
+                    <!-- Language Buttons -->
+                    <div class="flex gap-1 bg-gray-100 rounded-lg p-1">
+                        <button id="langDE" class="lang-btn px-2 py-1 text-xs font-semibold rounded transition" data-lang="de">
+                            🇩🇪 DE
+                        </button>
+                        <button id="langEN" class="lang-btn px-2 py-1 text-xs font-semibold rounded transition" data-lang="en">
+                            🇬🇧 EN
+                        </button>
+                    </div>
                     
-                    <select id="languageSelect" class="px-3 py-2 theme-border theme-bg theme-text border rounded-lg text-sm font-medium">
-                        <option value="de">Deutsch</option>
-                        <option value="en">English</option>
-                    </select>
+                    <!-- Theme Switcher -->
+                    <button id="themeCycle" class="theme-text hover:opacity-70 transition p-2 rounded-lg" title="Theme wechseln">
+                        <span id="themeIcon">🌞</span>
+                    </button>
                     
                     <!-- Cart Button -->
-                    <button id="cartToggle" class="relative p-2 text-gray-600 hover:text-primary-600 transition">
+                    <button id="cartToggle" class="relative p-2 theme-text hover:theme-primary transition rounded-lg">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
-                        <span id="cartBadge" class="absolute top-0 right-0 bg-accent-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+                        <span id="cartBadge" class="absolute top-0 right-0 theme-accent-bg text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden font-bold">0</span>
+                    </button>
+                    
+                    <!-- Mobile Menu Toggle -->
+                    <button id="mobileMenuToggle" class="theme-text hover:opacity-70 transition p-2 rounded-lg lg:hidden">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
                     </button>
                 </div>
             </div>
+            
+            <!-- Navigation Menu -->
+            <nav id="navMenu" class="hidden lg:flex border-t theme-border pb-4 gap-2">
+                <button id="navAll" class="nav-link px-4 py-2 rounded-lg text-sm font-medium transition" data-category="all">
+                    Alles anzeigen
+                </button>
+            </nav>
         </div>
     </header>
 
+    <!-- Mobile Navigation Menu -->
+    <nav id="mobileNav" class="hidden lg:hidden theme-bg-secondary theme-border border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div id="mobileNavMenu" class="flex flex-col gap-2">
+                <button id="mobileNavAll" class="nav-link w-full px-4 py-2 rounded-lg text-sm font-medium transition text-left" data-category="all">
+                    Alles anzeigen
+                </button>
+            </div>
+        </div>
+    </nav>
+
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 theme-bg">
-        
-        <!-- Category Filter -->
-        <section class="mb-8">
-            <h2 class="text-lg font-semibold theme-text mb-4">Kategorien</h2>
-            <div id="categoryFilter" class="flex flex-wrap gap-3">
-                <!-- Categories will be rendered here -->
-            </div>
-        </section>
-
         <!-- Products Grid -->
         <section>
             <h2 class="text-lg font-semibold theme-text mb-6">Unsere Produkte</h2>

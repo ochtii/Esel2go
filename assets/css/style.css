@@ -151,6 +151,35 @@ footer a:hover {
     opacity: 0.8;
 }
 
+/* Navigation styles */
+.nav-link {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.nav-link.theme-primary-bg {
+    color: white !important;
+}
+
+.nav-link:not(.theme-primary-bg) {
+    color: var(--theme-text);
+}
+
+.nav-link:not(.theme-primary-bg):hover {
+    opacity: 0.7;
+}
+
+/* Language buttons */
+.lang-btn {
+    background-color: white;
+    color: var(--theme-text);
+    border: 1px solid var(--theme-border);
+}
+
+.lang-btn.theme-primary-bg {
+    color: white !important;
+}
+
 /* Smooth scrolling */
 html {
     scroll-behavior: smooth;
