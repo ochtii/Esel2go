@@ -30,18 +30,22 @@ function formatDate(isoString) {
  */
 async function fetchBuildInfo() {
     try {
+        console.log('Loading build-info.json from: ./build-info.json');
         const response = await fetch('./build-info.json');
+        console.log('Response status:', response.status, response.statusText);
+        
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
         }
         const data = await response.json();
+        console.log('Build info data:', data);
         
         if (data.lastCommit) {
             console.log('✓ Build info loaded with commit time:', data.lastCommit);
             return formatDate(data.lastCommit);
         }
     } catch (error) {
-        console.warn('Failed to load build-info.json:', error.message);
+        console.error('Failed to load build-info.json:', error.message, error);
     }
     
     return null;
@@ -108,19 +112,7 @@ export async function initializeFooter() {
         timestampElement.textContent = timestamp;
         console.log('✓ Footer timestamp displayed:', timestamp);
     } else {
-        // Fallback: show current date
-        const now = new Date();
-        const options = {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            timeZone: 'Europe/Vienna'
-        };
-        const fallbackDate = new Intl.DateTimeFormat('de-DE', options).format(now);
-        timestampElement.textContent = fallbackDate + ' (aktuell)';
-        console.warn('⚠ Using current date as fallback');
+        timestampElement.textContent = '(Datum nicht verfügbar)';
+        console.warn('⚠ Could not fetch last commit time');
     }
 }

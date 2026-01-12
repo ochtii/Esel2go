@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T00:48:20Z", "message": "fix: restore nav button event listeners and simplify renderNavigation()", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T00:50:22Z", "message": "fix: add fallback for footer timestamp and improve error handling", "author": "Iris Oberegger"}
