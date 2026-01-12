@@ -478,8 +478,8 @@
         const disclaimerContent = document.getElementById('disclaimerContent');
         const footerYear = document.getElementById('footerYear');
 
-        // Set current year
-        footerYear.textContent = new Date().getFullYear();
+        // Set current year (falls vorhanden – je nach Footer-Variante)
+        footerYear?.textContent = new Date().getFullYear();
 
         // Load disclaimer
         function loadDisclaimer(lang) {
