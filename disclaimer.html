@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disclaimer - Esel2go</title>
+    <script src="src/cachebuster-init.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .theme-light {
+            --theme-orange: #f97316;
+            --theme-amber: #f59e0b;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 theme-light min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <svg class="w-8 h-8 sm:w-10 sm:h-10" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                    </svg>
+                    <h1 class="text-xl sm:text-3xl font-bold">Disclaimer</h1>
+                </div>
+                <a href="index.html" class="bg-white/20 hover:bg-white/30 px-3 py-2 sm:px-6 sm:py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span class="hidden sm:inline">Zurück zum Shop</span>
+                    <span class="sm:hidden">Shop</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Language Selector -->
+        <div class="mb-8 flex justify-center">
+            <div class="bg-white rounded-lg shadow-md p-4 inline-flex items-center gap-3 flex-wrap justify-center">
+                <span class="font-medium text-gray-700">Sprache / Language:</span>
+                <select id="languageSelector" class="px-4 py-2 border-2 border-orange-300 rounded-lg focus:outline-none focus:border-orange-500 font-medium cursor-pointer">
+                    <option value="de">🇩🇪 Deutsch</option>
+                    <option value="en">🇬🇧 English</option>
+                    <option value="fr">🇫🇷 Français</option>
+                    <option value="it">🇮🇹 Italiano</option>
+                    <option value="es">🇪🇸 Español</option>
+                    <option value="pt">🇵🇹 Português</option>
+                    <option value="nl">🇳🇱 Nederlands</option>
+                    <option value="pl">🇵🇱 Polski</option>
+                    <option value="tr">🇹🇷 Türkçe</option>
+                    <option value="ar">🇸🇦 العربية</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Disclaimer Content -->
+        <div id="disclaimerContent" class="bg-white rounded-2xl shadow-xl p-6 sm:p-10 space-y-6">
+            <!-- Content wird dynamisch geladen -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-16 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-400">
+                <span id="footerYear"></span> Esel2go - Demo-Projekt
+            </p>
+        </div>
+    </footer>
+
+    <script type="module">
+        const disclaimers = {
+            de: {
+                title: "⚠️ Wichtiger Hinweis - Bitte Lesen!",
+                sections: [
+                    {
+                        icon: "🎭",
+                        heading: "Das ist nur eine Demo",
+                        text: "Diese Website ist NICHT echt. Es ist nur ein Test-Projekt zum Lernen und Zeigen."
+                    },
+                    {
+                        icon: "🛒",
+                        heading: "Keine echten Bestellungen",
+                        text: "Du kannst hier NICHTS wirklich kaufen. Es gibt keine echten Produkte. Es ist alles nur zum Anschauen."
+                    },
+                    {
+                        icon: "💳",
+                        heading: "Keine Zahlungen",
+                        text: "Gib hier NIE echte Kreditkarten-Daten oder Bankdaten ein. Das wäre gefährlich!"
+                    },
+                    {
+                        icon: "📧",
+                        heading: "Keine echten Daten eingeben",
+                        text: "Nutze KEINE echten E-Mail-Adressen oder persönlichen Informationen. Die Daten sind nicht geschützt."
+                    },
+                    {
+                        icon: "⚖️",
+                        heading: "Keine Garantien",
+                        text: "Wir versprechen nichts. Wenn etwas nicht funktioniert, ist das okay. Es ist ja nur zum Üben."
+                    },
+                    {
+                        icon: "🎓",
+                        heading: "Nur zum Lernen",
+                        text: "Diese Seite ist ein Lern-Projekt. Sie zeigt, wie eine Shop-Website funktionieren könnte."
+                    }
+                ],
+                summary: "Einfach gesagt: Dies ist ein Spiel-Laden. Nicht echt. Nur zum Ansehen. Gib keine echten Daten ein. Alles klar? 👍"
+            },
+            en: {
+                title: "⚠️ Important Notice - Please Read!",
+                sections: [
+                    {
+                        icon: "🎭",
+                        heading: "This is Only a Demo",
+                        text: "This website is NOT real. It's just a test project for learning and showing."
+                    },
+                    {
+                        icon: "🛒",
+                        heading: "No Real Orders",
+                        text: "You CANNOT actually buy anything here. There are no real products. Everything is just for looking."
+                    },
+                    {
+                        icon: "💳",
+                        heading: "No Payments",
+                        text: "NEVER enter real credit card or bank details here. That would be dangerous!"
+                    },
+                    {
+                        icon: "📧",
+                        heading: "Don't Enter Real Data",
+                        text: "Do NOT use real email addresses or personal information. The data is not protected."
+                    },
+                    {
+                        icon: "⚖️",
+                        heading: "No Guarantees",
+                        text: "We don't promise anything. If something doesn't work, that's okay. It's just for practice."
+                    },
+                    {
+                        icon: "🎓",
+                        heading: "For Learning Only",
+                        text: "This page is a learning project. It shows how a shop website could work."
+                    }
+                ],
+                summary: "Simply put: This is a pretend shop. Not real. Only for viewing. Don't enter real data. Got it? 👍"
+            },
+            fr: {
+                title: "⚠️ Avis Important - Veuillez Lire!",
+                sections: [
+                    {
+                        icon: "🎭",
+                        heading: "C'est Seulement une Démo",
+                        text: "Ce site n'est PAS réel. C'est juste un projet de test pour apprendre et montrer."
+                    },
+                    {
+                        icon: "🛒",
+                        heading: "Pas de Vraies Commandes",
+                        text: "Vous ne pouvez RIEN acheter ici. Il n'y a pas de vrais produits. Tout est juste pour regarder."
+                    },
+                    {
+                        icon: "💳",
+                        heading: "Pas de Paiements",
+                        text: "N'entrez JAMAIS de vraies cartes de crédit ou données bancaires. Ce serait dangereux!"
+                    },
+                    {
+                        icon: "📧",
+                        heading: "Pas de Vraies Données",
+                        text: "N'utilisez PAS de vraies adresses email ou informations personnelles. Les données ne sont pas protégées."
+                    },
+                    {
+                        icon: "⚖️",
+                        heading: "Aucune Garantie",
+                        text: "Nous ne promettons rien. Si quelque chose ne fonctionne pas, ce n'est pas grave. C'est juste pour s'entraîner."
+                    },
+                    {
+                        icon: "🎓",
+                        heading: "Uniquement Pour Apprendre",
+                        text: "Cette page est un projet d'apprentissage. Elle montre comment un site de boutique pourrait fonctionner."
+                    }
+                ],
+                summary: "En bref: C'est un magasin fictif. Pas réel. Juste pour regarder. N'entrez pas de vraies données. Compris? 👍"
+            },
+            it: {
+                title: "⚠️ Avviso Importante - Per Favore Leggi!",
+                sections: [
+                    {
+                        icon: "🎭",
+                        heading: "Questa è Solo una Demo",
+                        text: "Questo sito NON è reale. È solo un progetto di test per imparare e mostrare."
+                    },
+                    {
+                        icon: "🛒",
+                        heading: "Nessun Ordine Reale",
+                        text: "NON puoi comprare nulla qui. Non ci sono prodotti reali. È tutto solo per guardare."
+                    },
+                    {
+                        icon: "💳",
+                        heading: "Nessun Pagamento",
+                        text: "MAI inserire vere carte di credito o dati bancari. Sarebbe pericoloso!"
+                    },
+                    {
+                        icon: "📧",
+                        heading: "Non Inserire Dati Reali",
+                        text: "NON usare veri indirizzi email o informazioni personali. I dati non sono protetti."
+                    },
+                    {
+                        icon: "⚖️",
+                        heading: "Nessuna Garanzia",
+                        text: "Non promettiamo nulla. Se qualcosa non funziona, va bene. È solo per fare pratica."
+                    },
+                    {
+                        icon: "🎓",
+                        heading: "Solo Per Imparare",
+                        text: "Questa pagina è un progetto di apprendimento. Mostra come potrebbe funzionare un sito di negozio."
+                    }
+                ],
+                summary: "In poche parole: Questo è un negozio finto. Non reale. Solo per guardare. Non inserire dati reali. Capito? 👍"
+            },
+            es: {
+                title: "⚠️ Aviso Importante - ¡Por Favor Lee!",
+                sections: [
+                    {
+                        icon: "🎭",
+                        heading: "Esto es Solo una Demo",
+                        text: "Este sitio NO es real. Es solo un proyecto de prueba para aprender y mostrar."
+                    },
+                    {
+                        icon: "🛒",
+                        heading: "Sin Pedidos Reales",
+                        text: "NO puedes comprar nada aquí. No hay productos reales. Todo es solo para mirar."
+                    },
+                    {
+                        icon: "💳",
+                        heading: "Sin Pagos",
+                        text: "NUNCA ingreses tarjetas de crédito o datos bancarios reales. ¡Sería peligroso!"
+                    },
+                    {
+                        icon: "📧",
+                        heading: "No Ingreses Datos Reales",
+                        text: "NO uses correos electrónicos reales o información personal. Los datos no están protegidos."
+                    },
+                    {
+                        icon: "⚖️",
+                        heading: "Sin Garantías",
+                        text: "No prometemos nada. Si algo no funciona, está bien. Es solo para practicar."
+                    },
+                    {
+                        icon: "🎓",
+                        heading: "Solo Para Aprender",
+                        text: "Esta página es un proyecto de aprendizaje. Muestra cómo podría funcionar un sitio de tienda."
+                    }
+                ],
+                summary: "En pocas palabras: Esta es una tienda de mentira. No real. Solo para mirar. No ingreses datos reales. ¿Entendido? 👍"
+            },
+            pt: {
+                title: "⚠️ Aviso Importante - Por Favor Leia!",
+                sections: [
+                    {
+                        icon: "🎭",
+                        heading: "Isto é Apenas uma Demonstração",
+                        text: "Este site NÃO é real. É apenas um projeto de teste para aprender e mostrar."
+                    },
+                    {
+                        icon: "🛒",
+                        heading: "Sem Pedidos Reais",
+                        text: "Você NÃO pode comprar nada aqui. Não há produtos reais. É tudo apenas para ver."
+                    },
+                    {
+                        icon: "💳",
+                        heading: "Sem Pagamentos",
+                        text: "NUNCA insira cartões de crédito ou dados bancários reais. Seria perigoso!"
+                    },
+                    {
+                        icon: "📧",
+                        heading: "Não Insira Dados Reais",
+                        text: "NÃO use endereços de email reais ou informações pessoais. Os dados não estão protegidos."
+                    },
+                    {
+                        icon: "⚖️",
+                        heading: "Sem Garantias",
+                        text: "Não prometemos nada. Se algo não funcionar, tudo bem. É apenas para praticar."
+                    },
+                    {
+                        icon: "🎓",
+                        heading: "Apenas Para Aprender",
+                        text: "Esta página é um projeto de aprendizagem. Mostra como um site de loja poderia funcionar."
+                    }
+                ],
+                summary: "Resumindo: Esta é uma loja de mentira. Não real. Apenas para ver. Não insira dados reais. Entendido? 👍"
+            },
+            nl: {
+                title: "⚠️ Belangrijke Mededeling - Lees Alsjeblieft!",
+                sections: [
+                    {
+                        icon: "🎭",
+                        heading: "Dit is Alleen een Demo",
+                        text: "Deze website is NIET echt. Het is alleen een testproject om te leren en te laten zien."
+                    },
+                    {
+                        icon: "🛒",
+                        heading: "Geen Echte Bestellingen",
+                        text: "Je kunt hier NIETS echt kopen. Er zijn geen echte producten. Het is allemaal alleen om naar te kijken."
+                    },
+                    {
+                        icon: "💳",
+                        heading: "Geen Betalingen",
+                        text: "Voer NOOIT echte creditcard of bankgegevens in. Dat zou gevaarlijk zijn!"
+                    },
+                    {
+                        icon: "📧",
+                        heading: "Geen Echte Gegevens Invoeren",
+                        text: "Gebruik GEEN echte e-mailadressen of persoonlijke informatie. De gegevens zijn niet beschermd."
+                    },
+                    {
+                        icon: "⚖️",
+                        heading: "Geen Garanties",
+                        text: "We beloven niets. Als iets niet werkt, is dat oké. Het is alleen om te oefenen."
+                    },
+                    {
+                        icon: "🎓",
+                        heading: "Alleen Om Te Leren",
+                        text: "Deze pagina is een leerproject. Het laat zien hoe een winkel website zou kunnen werken."
+                    }
+                ],
+                summary: "Simpel gezegd: Dit is een nep-winkel. Niet echt. Alleen om naar te kijken. Voer geen echte gegevens in. Begrepen? 👍"
+            },
+            pl: {
+                title: "⚠️ Ważne Powiadomienie - Proszę Przeczytać!",
+                sections: [
+                    {
+                        icon: "🎭",
+                        heading: "To Jest Tylko Demo",
+                        text: "Ta strona NIE jest prawdziwa. To tylko projekt testowy do nauki i pokazywania."
+                    },
+                    {
+                        icon: "🛒",
+                        heading: "Brak Prawdziwych Zamówień",
+                        text: "NIE możesz tu niczego naprawdę kupić. Nie ma prawdziwych produktów. To wszystko tylko do oglądania."
+                    },
+                    {
+                        icon: "💳",
+                        heading: "Brak Płatności",
+                        text: "NIGDY nie wprowadzaj prawdziwych kart kredytowych lub danych bankowych. To byłoby niebezpieczne!"
+                    },
+                    {
+                        icon: "📧",
+                        heading: "Nie Wprowadzaj Prawdziwych Danych",
+                        text: "NIE używaj prawdziwych adresów email lub informacji osobistych. Dane nie są chronione."
+                    },
+                    {
+                        icon: "⚖️",
+                        heading: "Brak Gwarancji",
+                        text: "Nic nie obiecujemy. Jeśli coś nie działa, to w porządku. To tylko do ćwiczeń."
+                    },
+                    {
+                        icon: "🎓",
+                        heading: "Tylko Do Nauki",
+                        text: "Ta strona to projekt edukacyjny. Pokazuje, jak mógłby działać sklep internetowy."
+                    }
+                ],
+                summary: "Mówiąc prosto: To jest udawany sklep. Nie prawdziwy. Tylko do oglądania. Nie wprowadzaj prawdziwych danych. Jasne? 👍"
+            },
+            tr: {
+                title: "⚠️ Önemli Duyuru - Lütfen Okuyun!",
+                sections: [
+                    {
+                        icon: "🎭",
+                        heading: "Bu Sadece Bir Demo",
+                        text: "Bu web sitesi gerçek DEĞİL. Sadece öğrenmek ve göstermek için bir test projesi."
+                    },
+                    {
+                        icon: "🛒",
+                        heading: "Gerçek Sipariş Yok",
+                        text: "Buradan gerçekten bir şey SATIN ALAMAZsınız. Gerçek ürün yok. Her şey sadece bakmak için."
+                    },
+                    {
+                        icon: "💳",
+                        heading: "Ödeme Yok",
+                        text: "ASLA gerçek kredi kartı veya banka bilgileri girmeyin. Bu tehlikeli olur!"
+                    },
+                    {
+                        icon: "📧",
+                        heading: "Gerçek Veri Girmeyin",
+                        text: "Gerçek e-posta adresleri veya kişisel bilgiler KULLANMAYIN. Veriler korunmuyor."
+                    },
+                    {
+                        icon: "⚖️",
+                        heading: "Garanti Yok",
+                        text: "Hiçbir şey vaat etmiyoruz. Bir şey çalışmazsa, sorun değil. Sadece pratik için."
+                    },
+                    {
+                        icon: "🎓",
+                        heading: "Sadece Öğrenmek İçin",
+                        text: "Bu sayfa bir öğrenme projesi. Bir alışveriş sitesinin nasıl çalışabileceğini gösterir."
+                    }
+                ],
+                summary: "Basitçe: Bu sahte bir mağaza. Gerçek değil. Sadece bakmak için. Gerçek veri girmeyin. Anlaşıldı mı? 👍"
+            },
+            ar: {
+                title: "⚠️ إشعار مهم - يرجى القراءة!",
+                sections: [
+                    {
+                        icon: "🎭",
+                        heading: "هذا مجرد عرض توضيحي",
+                        text: "هذا الموقع ليس حقيقياً. إنه مجرد مشروع تجريبي للتعلم والعرض."
+                    },
+                    {
+                        icon: "🛒",
+                        heading: "لا توجد طلبات حقيقية",
+                        text: "لا يمكنك شراء أي شيء هنا حقاً. لا توجد منتجات حقيقية. كل شيء للمشاهدة فقط."
+                    },
+                    {
+                        icon: "💳",
+                        heading: "لا توجد مدفوعات",
+                        text: "لا تدخل أبداً بطاقات ائتمان حقيقية أو بيانات مصرفية. سيكون ذلك خطيراً!"
+                    },
+                    {
+                        icon: "📧",
+                        heading: "لا تدخل بيانات حقيقية",
+                        text: "لا تستخدم عناوين بريد إلكتروني حقيقية أو معلومات شخصية. البيانات غير محمية."
+                    },
+                    {
+                        icon: "⚖️",
+                        heading: "لا توجد ضمانات",
+                        text: "نحن لا نعد بأي شيء. إذا لم يعمل شيء ما، فلا بأس. إنه للتدريب فقط."
+                    },
+                    {
+                        icon: "🎓",
+                        heading: "للتعلم فقط",
+                        text: "هذه الصفحة مشروع تعليمي. إنها تُظهر كيف يمكن أن يعمل موقع متجر."
+                    }
+                ],
+                summary: "ببساطة: هذا متجر وهمي. ليس حقيقياً. للمشاهدة فقط. لا تدخل بيانات حقيقية. فهمت؟ 👍"
+            }
+        };
+
+        const languageSelector = document.getElementById('languageSelector');
+        const disclaimerContent = document.getElementById('disclaimerContent');
+        const footerYear = document.getElementById('footerYear');
+
+        // Set current year
+        footerYear.textContent = new Date().getFullYear();
+
+        // Load disclaimer
+        function loadDisclaimer(lang) {
+            const data = disclaimers[lang];
+            
+            let html = `
+                <h2 class="text-3xl sm:text-4xl font-bold text-center mb-8 text-gray-800">
+                    ${data.title}
+                </h2>
+                <div class="space-y-6">
+            `;
+
+            data.sections.forEach(section => {
+                html += `
+                    <div class="border-l-4 border-orange-500 pl-4 py-2 bg-orange-50 rounded-r-lg">
+                        <h3 class="text-xl sm:text-2xl font-bold mb-2 flex items-center gap-2">
+                            <span class="text-3xl">${section.icon}</span>
+                            ${section.heading}
+                        </h3>
+                        <p class="text-base sm:text-lg text-gray-700 leading-relaxed">${section.text}</p>
+                    </div>
+                `;
+            });
+
+            html += `
+                </div>
+                <div class="mt-10 p-6 bg-gradient-to-r from-orange-100 to-amber-100 rounded-xl border-2 border-orange-300">
+                    <p class="text-lg sm:text-xl font-bold text-center text-gray-800">
+                        ${data.summary}
+                    </p>
+                </div>
+            `;
+
+            disclaimerContent.innerHTML = html;
+            
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
+            
+            // Save preference
+            localStorage.setItem('disclaimerLanguage', lang);
+        }
+
+        // Language selector event
+        languageSelector.addEventListener('change', (e) => {
+            loadDisclaimer(e.target.value);
+        });
+
+        // Load saved language or default to German
+        const savedLang = localStorage.getItem('disclaimerLanguage') || 'de';
+        languageSelector.value = savedLang;
+        loadDisclaimer(savedLang);
+    </script>
+</body>
+</html>

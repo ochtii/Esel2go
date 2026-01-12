@@ -444,11 +444,26 @@ function downloadJSON() {
  * Update statistics
  */
 function updateStats() {
-    document.getElementById('totalProducts').textContent = products.length;
-    document.getElementById('totalCategories').textContent = categories.length;
-    
+    const totalProducts = products.length;
+    const totalCategories = categories.length;
+    const avgPrice = products.reduce((sum, p) => sum + p.price, 0) / totalProducts || 0;
     const totalValue = products.reduce((sum, p) => sum + p.price, 0);
+    
+    // Desktop stats
+    document.getElementById('totalProducts').textContent = totalProducts;
+    document.getElementById('totalCategories').textContent = totalCategories;
     document.getElementById('totalValue').textContent = `€${totalValue.toFixed(2)}`;
+    
+    // Mobile stats (kompakte Ansicht)
+    const mobileProductsEl = document.getElementById('totalProducts-mobile');
+    const mobileCategoriesEl = document.getElementById('totalCategories-mobile');
+    const mobileAvgPriceEl = document.getElementById('avgPrice-mobile');
+    const mobileTotalValueEl = document.getElementById('totalValue-mobile');
+    
+    if (mobileProductsEl) mobileProductsEl.textContent = totalProducts;
+    if (mobileCategoriesEl) mobileCategoriesEl.textContent = totalCategories;
+    if (mobileAvgPriceEl) mobileAvgPriceEl.textContent = `€${avgPrice.toFixed(2)}`;
+    if (mobileTotalValueEl) mobileTotalValueEl.textContent = `€${totalValue.toFixed(2)}`;
 }
 
 /**
