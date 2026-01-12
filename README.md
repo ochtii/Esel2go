@@ -135,6 +135,37 @@ Dann öffne: **http://localhost:8080** (mit server.py) oder **http://localhost:8
 | **State Management** | LocalStorage + Modules |
 | **Data Format** | JSON |
 | **Build Tool** | None (Zero Bundler) |
+| **CI/CD** | GitHub Actions |
+| **Hosting** | GitHub Pages |
+
+---
+
+## 🌐 GitHub Pages Deployment
+
+### Automatisches Deployment
+
+Bei jedem Push auf `main` wird die App automatisch deployed:
+
+1. **GitHub Actions Workflow** (`.github/workflows/deploy.yml`) läuft
+2. **build-info.json** wird mit aktuellem Timestamp aktualisiert
+3. Site wird auf **https://ochtii.github.io/Esel2go/** deployed
+
+### GitHub Pages Setup (einmalig erforderlich)
+
+⚠️ **Wichtig**: Für sofortige Updates ohne Cache musst du GitHub Pages auf "GitHub Actions" umstellen:
+
+1. Gehe zu **Settings** → **Pages**
+2. Bei "Build and deployment" → **Source**: Wähle **GitHub Actions**
+3. Speichern
+
+**Warum?** Der neue Workflow nutzt `actions/deploy-pages@v4` mit optimalen Cache-Headern.
+
+### Cache-Probleme auf GitHub Pages?
+
+Wenn Änderungen nicht sofort sichtbar sind:
+- **Hard Refresh**: `Ctrl+Shift+R` (Windows/Linux) oder `Cmd+Shift+R` (Mac)
+- **Browser-Cache leeren**: DevTools → Network → "Disable cache" aktivieren
+- **Inkognito-Modus**: Teste im Private/Inkognito-Fenster
 
 ---
 
