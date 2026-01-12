@@ -484,6 +484,11 @@
         // Load disclaimer
         function loadDisclaimer(lang) {
             const data = disclaimers[lang];
+            if (!data) {
+                // Fallback, falls ein ungültiger Sprachcode gespeichert wurde
+                loadDisclaimer('de');
+                return;
+            }
             
             let html = `
                 <h2 class="text-3xl sm:text-4xl font-bold text-center mb-8 text-gray-800">
@@ -527,10 +532,11 @@
             loadDisclaimer(e.target.value);
         });
 
-        // Load saved language or default to German
+        // Load saved language or default to German (und validieren)
         const savedLang = localStorage.getItem('disclaimerLanguage') || 'de';
-        languageSelector.value = savedLang;
-        loadDisclaimer(savedLang);
+        const initialLang = disclaimers[savedLang] ? savedLang : 'de';
+        languageSelector.value = initialLang;
+        loadDisclaimer(initialLang);
     </script>
 </body>
 </html>

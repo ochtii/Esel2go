@@ -221,12 +221,17 @@ async function loadCommitDetails() {
     try {
         // Load local build-info.json
         const version = Date.now();
-        const paths = ['build-info.json', './build-info.json'];
+        const baseUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+        const paths = [
+            `${baseUrl}build-info.json`,
+            'build-info.json',
+            './build-info.json'
+        ];
         let data = null;
         
         for (const path of paths) {
             try {
-                const response = await fetch(`${path}?v=${version}`);
+                const response = await fetch(`${path}?v=${version}`, { cache: 'no-store' });
                 if (response.ok) {
                     data = await response.json();
                     break;
@@ -237,7 +242,7 @@ async function loadCommitDetails() {
         }
         
         if (!data) {
-            throw new Error('Failed to load build-info.json');
+            throw new Error('build-info.json konnte nicht geladen werden');
         }
         
         // Try to load additional GitHub API data
@@ -310,7 +315,7 @@ async function loadCommitDetails() {
                             <span class="flex items-center gap-1 font-mono text-xs bg-gray-200 px-2 py-1 rounded">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
-                                </svg>normalizedF
+                                </svg>
                                 ${data.shortHash || data.hash?.substring(0, 7)}
                             </span>
                         </div>
@@ -444,6 +449,7 @@ async function loadCommitDetails() {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <p>Fehler beim Laden der Commit-Details</p>
+                <p class="text-xs text-gray-500 mt-2">${String(error?.message || error)}</p>
             </div>
         `;
     }
