@@ -506,8 +506,30 @@
         // Load theme.js and footer.js first for theme support and cache-buster status
         const version = window._cachebusterVersion || Date.now();
         
-        // Load theme module
-        import(`./src/theme.js?v=${version}`).catch(err => {
+        // Load and initialize theme module
+        import(`./src/theme.js?v=${version}`).then(themeModule => {
+            console.log('Theme module loaded');
+            // Initialize theme
+            themeModule.initializeTheme();
+            
+            // Setup theme switcher buttons
+            const themeBtns = document.querySelectorAll('.theme-btn');
+            themeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const theme = btn.dataset.theme;
+                    themeModule.setTheme(theme);
+                    
+                    // Update active state
+                    themeBtns.forEach(b => b.classList.remove('ring-2', 'ring-offset-2', 'ring-purple-500'));
+                    btn.classList.add('ring-2', 'ring-offset-2', 'ring-purple-500');
+                });
+                
+                // Set active state for current theme
+                if (btn.dataset.theme === themeModule.getCurrentTheme()) {
+                    btn.classList.add('ring-2', 'ring-offset-2', 'ring-purple-500');
+                }
+            });
+        }).catch(err => {
             console.error('Failed to load theme.js:', err);
         });
         
