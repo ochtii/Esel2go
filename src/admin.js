@@ -6,6 +6,7 @@
 let products = [];
 let categories = [];
 let editingId = null;
+let currentTab = 'manager'; // 'catalog' or 'manager'
 
 // DOM Elements
 let productForm;
@@ -14,6 +15,9 @@ let searchInput;
 let filterCategory;
 let imagePreview;
 let charCount;
+let catalogGrid;
+let catalogSearch;
+let catalogFilter;
 
 /**
  * Initialize Admin Panel
@@ -26,6 +30,9 @@ async function init() {
     filterCategory = document.getElementById('filterCategory');
     imagePreview = document.getElementById('imagePreview');
     charCount = document.getElementById('charCount');
+    catalogGrid = document.getElementById('catalogGrid');
+    catalogSearch = document.getElementById('catalogSearch');
+    catalogFilter = document.getElementById('catalogFilter');
     
     // Load data
     await loadData();
@@ -35,6 +42,7 @@ async function init() {
     
     // Render products
     renderProducts();
+    renderCatalog();
     
     // Update stats
     updateStats();
@@ -45,13 +53,39 @@ async function init() {
     document.getElementById('downloadJson').addEventListener('click', downloadJSON);
     searchInput.addEventListener('input', renderProducts);
     filterCategory.addEventListener('input', renderProducts);
+    catalogSearch.addEventListener('input', renderCatalog);
+    catalogFilter.addEventListener('input', renderCatalog);
     
     // Live preview listeners
     document.getElementById('productImage').addEventListener('input', updateImagePreview);
     document.getElementById('productDescription').addEventListener('input', updateCharCount);
     
+    // Initialize with manager view
+    switchTab('manager');
+    
     console.log('✨ Modern Admin panel initialized');
     showToast('✓ Admin Panel geladen', 'success');
+}
+
+/**
+ * Switch between tabs
+ */
+function switchTab(tab) {
+    currentTab = tab;
+    
+    // Update tab buttons
+    document.getElementById('catalogTab').classList.toggle('active', tab === 'catalog');
+    document.getElementById('managerTab').classList.toggle('active', tab === 'manager');
+    document.getElementById('catalogTab').classList.toggle('border-transparent', tab !== 'catalog');
+    document.getElementById('managerTab').classList.toggle('border-transparent', tab !== 'manager');
+    document.getElementById('catalogTab').classList.toggle('border-purple-500', tab === 'catalog');
+    document.getElementById('managerTab').classList.toggle('border-purple-500', tab === 'manager');
+    document.getElementById('catalogTab').classList.toggle('text-purple-600', tab === 'catalog');
+    document.getElementById('managerTab').classList.toggle('text-purple-600', tab === 'manager');
+    
+    // Update views
+    document.getElementById('catalogView').classList.toggle('hidden', tab !== 'catalog');
+    document.getElementById('managerView').classList.toggle('hidden', tab !== 'manager');
 }
 
 /**
@@ -101,7 +135,8 @@ async function loadData() {
 function populateCategoryDropdowns() {
     const selects = [
         document.getElementById('productCategory'),
-        document.getElementById('filterCategory')
+        document.getElementById('filterCategory'),
+        document.getElementById('catalogFilter')
     ];
     
     selects.forEach((select, index) => {
@@ -128,7 +163,61 @@ function populateCategoryDropdowns() {
 }
 
 /**
- * Render products list
+ * Render catalog view (read-only)
+ */
+function renderCatalog() {
+    const searchTerm = catalogSearch.value.toLowerCase();
+    const selectedCategory = catalogFilter.value;
+    
+    let filtered = products.filter(p => {
+        const matchesSearch = p.name.toLowerCase().includes(searchTerm) || 
+                            p.description.toLowerCase().includes(searchTerm);
+        const matchesCategory = !selectedCategory || p.categoryId === selectedCategory;
+        return matchesSearch && matchesCategory;
+    });
+    
+    catalogGrid.innerHTML = filtered.map(product => renderCatalogCard(product)).join('');
+}
+
+/**
+ * Render catalog card (simplified view)
+ */
+function renderCatalogCard(product) {
+    const category = categories.find(c => c.id === product.categoryId);
+    const categoryName = category ? category.name : 'Unbekannt';
+    const categoryColor = getCategoryColor(product.categoryId);
+    
+    return `
+        <div class="catalog-card bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-gray-100 hover:border-purple-200">
+            <div class="relative h-56 overflow-hidden bg-gradient-to-br from-purple-50 to-pink-50">
+                <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover">
+                <div class="absolute top-3 right-3">
+                    <span class="text-xs px-3 py-1 ${categoryColor} rounded-full font-semibold shadow-lg">
+                        ${categoryName}
+                    </span>
+                </div>
+                ${product.price >= 100 ? '<div class="absolute top-3 left-3"><span class="text-xs px-3 py-1 bg-yellow-400 text-yellow-900 rounded-full font-bold shadow-lg">💎 Premium</span></div>' : ''}
+            </div>
+            <div class="p-5">
+                <div class="flex items-start justify-between mb-2">
+                    <h3 class="font-bold text-xl text-gray-800 flex-1">${product.name}</h3>
+                    <span class="text-sm font-mono text-gray-400 bg-gray-100 px-2 py-1 rounded ml-2">${product.id}</span>
+                </div>
+                <p class="text-sm text-gray-600 mb-4 line-clamp-2">${product.description}</p>
+                <div class="flex items-center justify-between border-t pt-4 mt-4">
+                    <div class="text-2xl font-bold text-purple-600">€${product.price.toFixed(2)}</div>
+                    <div class="text-sm text-gray-500 space-y-1">
+                        <div>⏰ ${product.age} Jahre</div>
+                        <div>📍 ${product.origin}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Render products list (manager view)
  */
 function renderProducts() {
     const searchTerm = searchInput.value.toLowerCase();
@@ -426,10 +515,10 @@ style.textContent = `
         overflow: hidden;
     }
 `;
-document.head.appendChild(style);   setTimeout(() => {
-        toast.classList.add('hidden');
-    }, 3000);
-}
+document.head.appendChild(style);
+
+// Make switchTab globally accessible
+window.switchTab = switchTab;
 
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {

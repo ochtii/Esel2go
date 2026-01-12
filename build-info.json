@@ -1,1 +1,1 @@
-{"lastCommit": "2026-01-12T18:03:58Z", "message": "Content: Passendere Produktbilder - bessere thematische Übereinstimmung", "author": "Iris Oberegger"}
+{"lastCommit": "2026-01-12T18:10:04Z", "message": "Fix: Explicit environment in workflow to reduce deployment_queued delay", "author": "Iris Oberegger"}
